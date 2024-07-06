@@ -1,0 +1,15 @@
+﻿.text-output {
+    position: fixed;
+    width: 600px;
+    height: 500px;
+    bottom: 0;
+    right: 60px;
+    padding: 20px;
+    box-shadow: #111 2px 2px 50px;
+    z-index: 2;
+    background: #222;
+    border-radius: 5px 5px 0 0;
+    border-top: 1px solid #333;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}

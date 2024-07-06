@@ -1,0 +1,20 @@
+﻿@using BlazorMonaco.Editor
+
+<div class="text-output">
+	<BlazorMonaco.Editor.StandaloneCodeEditor Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
+</div>
+
+@code {
+	private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+	{
+		return new StandaloneEditorConstructionOptions
+			{
+				AutomaticLayout = true,
+				Language = "json",
+				Value = "function xyz() {\n" +
+						"   console.log(\"Hello world!\");\n" +
+						"}",
+				Theme = "vs-dark"
+			};
+	}
+}

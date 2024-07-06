@@ -44,3 +44,7 @@ a:hover {
     color: #5BF;
     text-decoration: underline;
 }
+
+.monaco-editor-container { /* for all editor instances */
+    height: 100%;
+}
