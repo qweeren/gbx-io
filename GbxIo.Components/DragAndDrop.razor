@@ -1,4 +1,6 @@
-﻿@rendermode InteractiveServer
+﻿@rendermode InteractiveAuto
+
+@inject IJSRuntime JSRuntime
 
 <div class="area @dropEnter @(clockwise ? "" : "counterclockwise")">
     <div>
@@ -17,11 +19,11 @@
 
 @code {
     private string? dropEnter;
-    private bool clockwise;
+    private bool clockwise = true;
 
-    private void OnChange(InputFileChangeEventArgs e)
+    private async Task OnChange(InputFileChangeEventArgs e)
     {
-        // resetFileInput
+        await JSRuntime.InvokeVoidAsync("resetFileInput");
     }
 
     private void DragEnter(DragEventArgs e)

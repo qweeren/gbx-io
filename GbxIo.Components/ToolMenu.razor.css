@@ -1,10 +1,49 @@
 ﻿.menu {
-    width: 200px;
-    height: 400px;
+    width: 250px;
     margin: 60px;
-    border: 4px solid #333;
-    box-shadow: #111 2px 2px 100px;
+    box-shadow: #111 2px 2px 50px;
     z-index: 2;
     background: #222;
-    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #333;
+    padding: 5px;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+    .menu ul li {
+        text-align: center;
+    }
+
+        .menu ul li a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: #FFF;
+            transition: 0.2s;
+            border: 2px solid #222;
+            border-radius: 2px;
+        }
+
+            .menu ul li a:hover {
+                border: 2px solid #39D;
+                background: #39D4;
+                box-shadow: #222 0px 0px 8px inset;
+            }
+
+            .menu ul li a.active {
+                border: 2px solid #39D;
+                background: #39D4;
+                box-shadow: #222 0px 0px 8px inset;
+            }
+
+
+
+.footer {
+    padding: 20px 15px 10px 15px;
+    text-align: right;
 }

@@ -1,13 +1,42 @@
+@rendermode InteractiveAuto
+
+@inject NavigationManager NavManager
+
 <div class="menu">
     <ul> <!-- order by popularity -->
-        <li>Optimize Gbx</li>
-        <li>Decompress Gbx</li>
-        <li>Extract map from replay</li>
-        <li>Extract thumbnail/icon</li>
-        <li>Extract embedded items</li>
-        <li>Extract ghosts</li>
-        <li>Extract inputs</li>
-        <li>Extract inputs (TMI)</li>
-        <li>Gbx to JSON</li>
+        <li><a href="optimize-gbx" class="@GetActive("optimize-gbx")">Optimize Gbx</a></li>
+        <li><a href="decompress-gbx" class="@GetActive("decompress-gbx")">Decompress Gbx</a></li>
+        <li><a href="extract-map-from-replay" class="@GetActive("extract-map-from-replay")">Extract map from replay</a></li>
+        <li><a href="extract-thumbnail-icon" class="@GetActive("extract-thumbnail-icon")">Extract thumbnail/icon</a></li>
+        <li><a href="extract-embedded-items" class="@GetActive("extract-embedded-items")">Extract embedded items</a></li>
+        <li><a href="extract-ghosts" class="@GetActive("extract-ghosts")">Extract ghosts</a></li>
+        <li><a href="extract-inputs" class="@GetActive("extract-inputs")">Extract inputs</a></li>
+        <li><a href="extract-inputs-tmi" class="@GetActive("extract-inputs-tmi")">Extract inputs (TMI)</a></li>
+        <li><a href="gbx-to-json" class="@GetActive("gbx-to-json")">Gbx to JSON</a></li>
     </ul>
+    <div class="footer">
+        <a href="https://explorer.gbx.tools">Feeling advanced?</a>
+    </div>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += (s, e) =>
+        {
+            StateHasChanged();
+        };
+    }
+
+    private bool IsActive(string href)
+    {
+        var uri = new Uri(NavManager.Uri).GetLeftPart(UriPartial.Path);
+        var relativePath = NavManager.ToBaseRelativePath(uri).ToLower();
+        return relativePath == href.ToLower();
+    }
+
+    private string GetActive(string href)
+    {
+        return IsActive(href) ? "active" : "";
+    }
+}

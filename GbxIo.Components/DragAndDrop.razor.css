@@ -28,6 +28,7 @@
     align-items: center;
     transition: --dashColor 1s, --areaColor 1s;
     font-size: 3rem;
+    border-radius: 5px;
 }
 
 .counterclockwise {
