@@ -1,0 +1,53 @@
+﻿@property --dashColor {
+    syntax: '<color>';
+    initial-value: #333;
+    inherits: false;
+}
+
+@property --areaColor {
+    syntax: '<color>';
+    initial-value: #4442;
+    inherits: false;
+}
+
+.area {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(90deg, var(--dashColor) 50%, transparent 0) repeat-x, linear-gradient(90deg, var(--dashColor) 50%, transparent 0) repeat-x, linear-gradient(0deg, var(--dashColor) 50%, transparent 0) repeat-y, linear-gradient(0deg, var(--dashColor) 50%, transparent 0) repeat-y, var(--areaColor);
+    background-size: 48px 16px, 48px 16px, 16px 48px, 16px 48px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+    cursor: pointer;
+    animation: linearGradientMoveClockwise 1s infinite linear;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: --dashColor 1s, --areaColor 1s;
+    font-size: 3rem;
+}
+
+.counterclockwise {
+    animation: linearGradientMoveCounterclockwise 1s infinite linear;
+}
+
+.drop-enter {
+    --dashColor: #0367A6;
+    --areaColor: #C4E5F222;
+    animation-duration: 0.1s;
+}
+
+@keyframes linearGradientMoveClockwise {
+    100% {
+        background-position: 48px 0, -48px 100%, 0 -48px, 100% 48px;
+    }
+}
+
+@keyframes linearGradientMoveCounterclockwise {
+    100% {
+        background-position: -48px 0, 48px 100%, 0 48px, 100% -48px;
+    }
+}

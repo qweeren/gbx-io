@@ -1,0 +1,10 @@
+﻿.menu {
+    width: 200px;
+    height: 400px;
+    margin: 60px;
+    border: 4px solid #333;
+    box-shadow: #111 2px 2px 100px;
+    z-index: 2;
+    background: #222;
+    padding: 20px;
+}

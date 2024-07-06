@@ -1,0 +1,42 @@
+﻿@rendermode InteractiveServer
+
+<div class="area @dropEnter @(clockwise ? "" : "counterclockwise")">
+    <div>
+        Drag and Drop
+    </div>
+    <div style="font-size: 18px">
+        files, or CLICK to select files
+    </div>
+</div>
+<InputFile OnChange="OnChange"
+           @ondragenter="DragEnter"
+           @ondragleave="DragEnd"
+           @ondragend="DragEnd"
+           @onmouseout="MouseOut"
+           @ondrop="DragEnd" class="files" multiple="true" />
+
+@code {
+    private string? dropEnter;
+    private bool clockwise;
+
+    private void OnChange(InputFileChangeEventArgs e)
+    {
+        // resetFileInput
+    }
+
+    private void DragEnter(DragEventArgs e)
+    {
+        dropEnter = "drop-enter";
+    }
+
+    private void MouseOut()
+    {
+        dropEnter = null;
+    }
+
+    private void DragEnd()
+    {
+        dropEnter = null;
+        clockwise = !clockwise;
+    }
+}
