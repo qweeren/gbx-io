@@ -17,6 +17,7 @@
 
     .menu ul li {
         text-align: center;
+        border-bottom: 1px solid #333;
     }
 
         .menu ul li a {

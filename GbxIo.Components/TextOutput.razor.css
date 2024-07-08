@@ -12,4 +12,53 @@
     border-top: 1px solid #333;
     border-left: 1px solid #333;
     border-right: 1px solid #333;
+    animation: goUp 1s forwards;
+}
+
+.text-editor-wrapper {
+    height: 90%;
+    margin-bottom: 15px;
+}
+
+.button {
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    color: #FFF;
+    transition: 0.2s;
+    background-color: #0F01;
+    border: 2px solid #363;
+    border-radius: 2px;
+    cursor: pointer;
+    width: 150px;
+    text-align: center;
+}
+
+    .button:hover {
+        border: 2px solid #3A3;
+        background: #0F02;
+        box-shadow: #222 0px 0px 8px inset;
+    }
+
+.bottom {
+    display: flex;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 100%;
+    margin: 0 20px;
+}
+
+@keyframes goUp {
+
+    0% {
+        bottom: -600px;
+    }
+
+    100% {
+        bottom: 0;
+    }
 }

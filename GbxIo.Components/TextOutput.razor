@@ -1,7 +1,13 @@
 ﻿@using BlazorMonaco.Editor
 
 <div class="text-output">
-	<BlazorMonaco.Editor.StandaloneCodeEditor Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
+	<div class="text-editor-wrapper">
+		<BlazorMonaco.Editor.StandaloneCodeEditor Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
+	</div>
+	<div class="bottom">
+		<div class="button">Download</div>
+		<div class="right">Gbx.json</div>
+	</div>
 </div>
 
 @code {
@@ -11,9 +17,6 @@
 			{
 				AutomaticLayout = true,
 				Language = "json",
-				Value = "function xyz() {\n" +
-						"   console.log(\"Hello world!\");\n" +
-						"}",
 				Theme = "vs-dark"
 			};
 	}
