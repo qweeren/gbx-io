@@ -1,11 +1,15 @@
 @rendermode InteractiveAuto
 
 @inject NavigationManager NavManager
+@inject IEnumerable<IoTool> Tools
 
 <div class="menu">
     <ul> <!-- order by popularity -->
-        <li><a href="optimize-gbx" class="@GetActive("optimize-gbx")">Optimize Gbx</a></li>
-        <li><a href="decompress-gbx" class="@GetActive("decompress-gbx")">Decompress Gbx</a></li>
+        @foreach (var tool in Tools)
+        {
+            <li><a href="@tool.Endpoint" class="@GetActive(tool.Endpoint)">@tool.Name</a></li>
+        }
+
         <li><a href="extract-map-from-replay" class="@GetActive("extract-map-from-replay")">Extract map from replay</a></li>
         <li><a href="extract-thumbnail-icon" class="@GetActive("extract-thumbnail-icon")">Extract thumbnail/icon</a></li>
         <li><a href="extract-embedded-items" class="@GetActive("extract-embedded-items")">Extract embedded items</a></li>

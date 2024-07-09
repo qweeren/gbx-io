@@ -6,11 +6,19 @@
 
 @rendermode InteractiveAuto
 
-<DragAndDrop OnFile="OnFileAsync"></DragAndDrop>
+<DragAndDrop Text="@(string.IsNullOrEmpty(Tool) ? TextWhenUnavailable : TextWhenAvailable)"
+             SubText="@(string.IsNullOrEmpty(Tool) ? SubTextWhenUnavailable : SubTextWhenAvailable)"
+             OnFile="OnFileAsync"></DragAndDrop>
 <ToolMenu></ToolMenu>
 <TextOutput></TextOutput>
 
 @code {
+    private const string TextWhenAvailable = "Drag and Drop";
+    private const string SubTextWhenAvailable = "files, or CLICK to select files";
+
+    private const string TextWhenUnavailable = "Select an I/O Tool";
+    private const string SubTextWhenUnavailable = "on the left side, then import files";
+
     [Parameter]
     public string? Tool { get; set; }
 

@@ -7,10 +7,10 @@
 
 <div class="area @dropEnter @(clockwise ? "" : "counterclockwise")">
     <div>
-        Drag and Drop
+        @Text
     </div>
     <div style="font-size: 18px">
-        files, or CLICK to select files
+        @SubText
     </div>
 </div>
 <InputFile OnChange="OnChange"
@@ -26,6 +26,12 @@
 
     [Parameter]
     public EventCallback<BinData> OnFile { get; set; }
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public string SubText { get; set; } = string.Empty;
 
     private async Task OnChange(InputFileChangeEventArgs e)
     {
