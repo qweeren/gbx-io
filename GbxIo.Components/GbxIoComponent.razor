@@ -1,9 +1,26 @@
-﻿@rendermode InteractiveAuto
+﻿@using GBX.NET
+@using System.IO.Compression
+@using GBX.NET.Exceptions
 
-<DragAndDrop></DragAndDrop>
+@inject ToolService ToolService
+
+@rendermode InteractiveAuto
+
+<DragAndDrop OnFile="OnFileAsync"></DragAndDrop>
 <ToolMenu></ToolMenu>
 <TextOutput></TextOutput>
 
 @code {
+    [Parameter]
+    public string? Tool { get; set; }
 
+    private async Task OnFileAsync(BinData data)
+    {
+        if (Tool is null)
+        {
+            return;
+        }
+
+        await ToolService.ProcessFileAsync(Tool, data);
+    }
 }

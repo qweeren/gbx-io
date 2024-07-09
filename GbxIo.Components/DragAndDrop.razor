@@ -1,4 +1,7 @@
-﻿@rendermode InteractiveAuto
+﻿@using GBX.NET
+@using System.IO.Compression
+
+@rendermode InteractiveAuto
 
 @inject IJSRuntime JSRuntime
 
@@ -21,8 +24,19 @@
     private string? dropEnter;
     private bool clockwise = true;
 
+    [Parameter]
+    public EventCallback<BinData> OnFile { get; set; }
+
     private async Task OnChange(InputFileChangeEventArgs e)
     {
+        foreach (var file in e.GetMultipleFiles(int.MaxValue))
+        {
+            using var stream = file.OpenReadStream(int.MaxValue);
+            var data = new byte[file.Size];
+            await stream.ReadAsync(data);
+            await OnFile.InvokeAsync(new BinData(file.Name, data));
+        }
+
         await JSRuntime.InvokeVoidAsync("resetFileInput");
     }
 
