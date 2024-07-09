@@ -3,10 +3,9 @@ using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
 
-public sealed class OptimizeGbxIoTool : IoTool<GbxData, GbxData>
+public sealed class OptimizeGbxIoTool(string endpoint) : IoTool<GbxData, GbxData>(endpoint)
 {
     public override string Name => "Optimize Gbx";
-    public override string Endpoint => "optimize-gbx";
 
     public override async Task<GbxData> ProcessAsync(GbxData input)
     {

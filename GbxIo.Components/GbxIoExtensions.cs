@@ -20,8 +20,11 @@ public static class GbxIoExtensions
     private static IServiceCollection AddTool<T>(this IServiceCollection services, string key)
         where T : IoTool
     {
-        services.AddKeyedScoped<IoTool, T>(key);
+        ArgumentNullException.ThrowIfNull(key);
+
+        services.AddKeyedScoped<IoTool, T>(key, (provider, key) => (T)Activator.CreateInstance(typeof(T), key!.ToString())!);
         services.AddScoped(provider => provider.GetRequiredKeyedService<IoTool>(key));
+        
         return services;
     }
 }

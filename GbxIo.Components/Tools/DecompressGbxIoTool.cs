@@ -3,10 +3,9 @@ using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
 
-public sealed class DecompressGbxIoTool : IoTool<GbxData, GbxData>
+public sealed class DecompressGbxIoTool(string endpoint) : IoTool<GbxData, GbxData>(endpoint)
 {
     public override string Name => "Decompress Gbx";
-    public override string Endpoint => "decompress-gbx";
 
     public override async Task<GbxData> ProcessAsync(GbxData input)
     {
