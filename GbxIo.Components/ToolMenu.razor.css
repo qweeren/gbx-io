@@ -45,6 +45,17 @@
 
 
 .footer {
-    padding: 20px 15px 10px 15px;
-    text-align: right;
+    display: flex;
+    padding: 15px 15px 8px 15px;
 }
+
+    .footer > div {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .footer > div > a > img:hover {
+            filter: drop-shadow(1px 1px 3px #888);
+        }
