@@ -13,6 +13,14 @@ public static class GbxIoExtensions
 
         services.AddTool<OptimizeGbxIoTool>("optimize-gbx");
         services.AddTool<DecompressGbxIoTool>("decompress-gbx");
+        services.AddTool<ExtractMapFromReplayIoTool>("extract-map-from-replay");
+        services.AddTool<ExtractThumbnailIoTool>("extract-thumbnail");
+        services.AddTool<ExtractEmbeddedItemsIoTool>("extract-embedded-items");
+        services.AddTool<ExtractGhostsIoTool>("extract-ghosts");
+        services.AddTool<ExtractInputsIoTool>("extract-inputs");
+        services.AddTool<ExtractInputsTmiIoTool>("extract-inputs-tmi");
+        services.AddTool<GbxToJsonIoTool>("gbx-to-json");
+        services.AddTool<JsonToGbxIoTool>("json-to-gbx");
 
         return services;
     }
@@ -22,7 +30,7 @@ public static class GbxIoExtensions
     {
         ArgumentNullException.ThrowIfNull(key);
 
-        services.AddKeyedScoped<IoTool, T>(key, (provider, key) => (T)Activator.CreateInstance(typeof(T), key!.ToString())!);
+        services.AddKeyedScoped<IoTool, T>(key, (provider, key) => (T)Activator.CreateInstance(typeof(T), key!.ToString(), provider)!);
         services.AddScoped(provider => provider.GetRequiredKeyedService<IoTool>(key));
         
         return services;

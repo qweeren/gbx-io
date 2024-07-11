@@ -3,7 +3,8 @@ using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
 
-public sealed class DecompressGbxIoTool(string endpoint) : IoTool<GbxData, GbxData>(endpoint)
+public sealed class DecompressGbxIoTool(string endpoint, IServiceProvider provider)
+    : IoTool<GbxData, GbxData>(endpoint, provider)
 {
     public override string Name => "Decompress Gbx";
 

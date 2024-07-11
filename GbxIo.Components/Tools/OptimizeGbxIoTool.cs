@@ -3,7 +3,8 @@ using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
 
-public sealed class OptimizeGbxIoTool(string endpoint) : IoTool<GbxData, GbxData>(endpoint)
+public sealed class OptimizeGbxIoTool(string endpoint, IServiceProvider provider)
+    : IoTool<GbxData, GbxData>(endpoint, provider)
 {
     public override string Name => "Optimize Gbx";
 

@@ -23,6 +23,19 @@ public sealed class ToolService
     {
         var tool = serviceProvider.GetKeyedService<IoTool>(toolId);
 
+        if (tool is null)
+        {
+            logger.LogWarning("Tool {ToolId} not found.", toolId);
+            return;
+        }
+
+        var toolType = tool.GetType();
+
+        var genericArguments = toolType.BaseType!.GetGenericArguments();
+
+        var inputType = genericArguments[0];
+        var outputType = genericArguments[1];
+
         // do something based on the toolId, which may want just gbx data, specific gbx types, or just text, or zip data
 
         using var ms = new MemoryStream(data.Data);
