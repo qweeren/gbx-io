@@ -123,12 +123,12 @@
 
         if (type == typeof(GbxData))
         {
-            return $"{(isOutput ? "" : "Any ")}Gbx file{(multiple ? "s" : "")}";
+            return $"{(isOutput ? "" : "Any ")}Gbx file{(multiple ? "s" : "")}{(isOutput ? "" : " (can be zipped)")}";
         }
 
         if (type == typeof(Gbx))
         {
-            return "Supported Gbx file" + (multiple ? "s" : "");
+            return "Supported Gbx file" + (multiple ? "s" : "") + (isOutput ? "" : " (can be zipped)");
         }
 
         var typeDef = type.GetGenericTypeDefinition();
@@ -137,7 +137,7 @@
         {
             var innerType = type.GetGenericArguments()[0];
 
-            return $"Gbx file{(multiple ? "s" : "")} ({innerType.Name})";
+            return $"Gbx file{(multiple ? "s" : "")} ({innerType.Name}){(isOutput ? "" : " (can be zipped)")}";
         }
 
         if (typeDef == typeof(IEnumerable<>))

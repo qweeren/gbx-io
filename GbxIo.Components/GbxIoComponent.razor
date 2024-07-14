@@ -3,6 +3,7 @@
 @using GBX.NET.Exceptions
 
 @inject ToolService ToolService
+@inject IJSRuntime JS
 
 @rendermode InteractiveAuto
 
@@ -45,6 +46,36 @@
             if (output is TextData textData)
             {
                 TextOutput = textData;
+            }
+
+            if (output is BinData binData)
+            {
+                var ms = new MemoryStream(binData.Data);
+
+                using var streamRef = new DotNetStreamReference(ms);
+                await JS.InvokeVoidAsync("downloadFileFromStream", binData.FileName, streamRef);
+                continue;
+            }
+
+            if (output is GbxData gbxData)
+            {
+                var ms = new MemoryStream(gbxData.Data);
+
+                using var streamRef = new DotNetStreamReference(ms);
+                await JS.InvokeVoidAsync("downloadFileFromStream", gbxData.FileName, streamRef);
+                continue;
+            }
+
+            if (output is Gbx gbx)
+            {
+                var ms = new MemoryStream();
+
+                gbx.Save(ms);
+                ms.Position = 0;
+
+                using var streamRef = new DotNetStreamReference(ms);
+                await JS.InvokeVoidAsync("downloadFileFromStream", gbx.FilePath, streamRef);
+                continue;
             }
         }
     }
