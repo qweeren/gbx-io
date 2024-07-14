@@ -1,14 +1,16 @@
-﻿using GbxIo.Components.Data;
+﻿using GBX.NET;
+using GBX.NET.NewtonsoftJson;
+using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
 
 public sealed class GbxToJsonIoTool(string endpoint, IServiceProvider provider)
-    : IoTool<GbxData, TextData>(endpoint, provider)
+    : IoTool<Gbx, TextData>(endpoint, provider)
 {
     public override string Name => "Gbx to JSON";
 
-    public override async Task<TextData> ProcessAsync(GbxData input)
+    public override Task<TextData> ProcessAsync(Gbx input)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(new TextData(input.FilePath, input.ToJson()));
     }
 }
