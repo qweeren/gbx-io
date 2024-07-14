@@ -11,13 +11,17 @@
 </div>
 
 @code {
+	[Parameter]
+	public TextData? TextData { get; set; }
+
 	private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
 	{
 		return new StandaloneEditorConstructionOptions
-			{
-				AutomaticLayout = true,
-				Language = "json",
-				Theme = "vs-dark"
-			};
+		{
+			AutomaticLayout = true,
+			Language = "json",
+			Theme = "vs-dark",
+			Value = TextData?.Text ?? ""
+		};
 	}
 }

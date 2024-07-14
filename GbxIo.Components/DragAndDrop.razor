@@ -1,17 +1,33 @@
 ﻿@using GBX.NET
 @using System.IO.Compression
+@using GBX.NET.Engines.Game
 
 @rendermode InteractiveAuto
 
 @inject IJSRuntime JSRuntime
 
 <div class="area @dropEnter @(clockwise ? "" : "counterclockwise")">
+    <div class="logo">
+        <img src="_content/GbxIo.Components/logo.png" width="300" height="75" />
+    </div>
     <div>
         @Text
     </div>
     <div style="font-size: 18px">
         @SubText
     </div>
+
+    @if (Tool is not null)
+    {
+        var (input, output) = GetToolInputOutput(Tool);
+
+        <div class="tool-info">
+            <h2>@Tool.Name</h2>
+            <p>Input: <span style="color: yellow">@input</span>, Output: <span style="color: yellow">@output</span></p>
+            <p>@Tool.Result</p>
+        </div>
+    }
+
 </div>
 <InputFile OnChange="OnChange"
            @ondragenter="DragEnter"
@@ -28,10 +44,16 @@
     public EventCallback<BinData> OnFile { get; set; }
 
     [Parameter]
+    public EventCallback OnDragEnd { get; set; }
+
+    [Parameter]
     public string Text { get; set; } = string.Empty;
 
     [Parameter]
     public string SubText { get; set; } = string.Empty;
+
+    [Parameter]
+    public IoTool? Tool { get; set; }
 
     private async Task OnChange(InputFileChangeEventArgs e)
     {
@@ -39,7 +61,13 @@
         {
             using var stream = file.OpenReadStream(int.MaxValue);
             var data = new byte[file.Size];
-            await stream.ReadAsync(data);
+            var bytesRead = await stream.ReadAsync(data);
+
+            if (bytesRead != file.Size)
+            {
+                throw new Exception("Failed to read file");
+            }
+
             await OnFile.InvokeAsync(new BinData(file.Name, data));
         }
 
@@ -60,5 +88,63 @@
     {
         dropEnter = null;
         clockwise = !clockwise;
+
+        OnDragEnd.InvokeAsync();
+    }
+
+    private (string, string) GetToolInputOutput(IoTool tool)
+    {
+        var toolType = tool.GetType();
+
+        var genericArgs = toolType.BaseType?.GetGenericArguments();
+
+        if (genericArgs is null || genericArgs.Length != 2)
+        {
+            return ("", "");
+        }
+
+        var inputType = GetTypeName(genericArgs[0]);
+        var outputType = GetTypeName(genericArgs[1], isOutput: true);
+
+        return (inputType, outputType);
+    }
+
+    private string GetTypeName(Type type, bool isOutput = false, bool multiple = false)
+    {
+        if (type == typeof(BinData))
+        {
+            return "Binary file" + (multiple ? "s" : "");
+        }
+
+        if (type == typeof(TextData))
+        {
+            return "Text file" + (multiple ? "s" : "");
+        }
+
+        if (type == typeof(GbxData))
+        {
+            return $"{(isOutput ? "" : "Any ")}Gbx file{(multiple ? "s" : "")}";
+        }
+
+        if (type == typeof(Gbx))
+        {
+            return "Supported Gbx file" + (multiple ? "s" : "");
+        }
+
+        var typeDef = type.GetGenericTypeDefinition();
+
+        if (typeDef == typeof(Gbx<>))
+        {
+            var innerType = type.GetGenericArguments()[0];
+
+            return $"Gbx file{(multiple ? "s" : "")} ({innerType.Name})";
+        }
+
+        if (typeDef == typeof(IEnumerable<>))
+        {
+            return $"Multiple {GetTypeName(type.GetGenericArguments()[0], isOutput, multiple: true)}";
+        }
+
+        return type.Name;
     }
 }

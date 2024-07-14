@@ -19,14 +19,19 @@ public sealed class ToolService
         this.logger = logger;
     }
 
-    public async Task ProcessFileAsync(string toolId, BinData data)
+    public IoTool? GetTool(string toolId)
+    {
+        return serviceProvider.GetKeyedService<IoTool>(toolId);
+    }
+
+    public async Task<IEnumerable<object>> ProcessFileAsync(string toolId, BinData data)
     {
         var tool = serviceProvider.GetKeyedService<IoTool>(toolId);
 
         if (tool is null)
         {
             logger.LogWarning("Tool {ToolId} not found.", toolId);
-            return;
+            return [];
         }
 
         var toolType = tool.GetType();
@@ -36,12 +41,7 @@ public sealed class ToolService
         var inputType = genericArguments[0];
         var outputType = genericArguments[1]; // probably not needed, output can be type checked
 
-        var outputs = await ProcessToolAsync(tool, data, inputType);
-
-        foreach (var output in outputs)
-        {
-            await ProcessOutputAsync(output);
-        }
+        return await ProcessToolAsync(tool, data, inputType);
     }
 
     private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType)

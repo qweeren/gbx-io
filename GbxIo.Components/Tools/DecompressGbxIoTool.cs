@@ -1,4 +1,5 @@
-﻿using GBX.NET;
+﻿using ByteSizeLib;
+using GBX.NET;
 using GbxIo.Components.Data;
 
 namespace GbxIo.Components.Tools;
@@ -14,6 +15,10 @@ public sealed class DecompressGbxIoTool(string endpoint, IServiceProvider provid
         using var outputStream = new MemoryStream(input.Data.Length);
 
         await Gbx.DecompressAsync(inputStream, outputStream);
+
+        var sizeIncreased = outputStream.Length - inputStream.Length;
+
+        Result = $"Decompressed. File size increased by {ByteSize.FromBytes(sizeIncreased)} ({sizeIncreased / (double)inputStream.Length:P}).";
 
         return new GbxData(input.FileName, outputStream.ToArray());
     }

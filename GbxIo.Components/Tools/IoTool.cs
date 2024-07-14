@@ -21,6 +21,7 @@ public abstract class IoTool(string endpoint, IServiceProvider provider)
     public abstract string Name { get; }
     public string Endpoint { get; } = endpoint;
     public IServiceProvider Provider { get; } = provider;
+    public string? Result { get; protected set; }
 
     public abstract Task<object?> ProcessAsync(object input);
 }

@@ -41,6 +41,20 @@
     animation-duration: 0.1s;
 }
 
+.logo {
+    position: absolute;
+    top: 15%;
+    font-size: 18px;
+    opacity: 0.2;
+}
+
+.tool-info {
+    position: absolute;
+    bottom: 20%;
+    font-size: 18px;
+    text-align: center;
+}
+
 @keyframes linearGradientMoveClockwise {
     100% {
         background-position: 48px 0, -48px 100%, 0 -48px, 100% 48px;

@@ -3,7 +3,7 @@
 @inject NavigationManager NavManager
 @inject IEnumerable<IoTool> Tools
 
-<div class="menu">
+<div class="menu @(Highlight ? "highlight" : "")">
     <ul> <!-- order by popularity -->
         @foreach (var tool in Tools)
         {
@@ -27,6 +27,9 @@
 </div>
 
 @code {
+    [Parameter]
+    public bool Highlight { get; set; }
+
     protected override void OnInitialized()
     {
         NavManager.LocationChanged += (s, e) =>

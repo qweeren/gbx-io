@@ -9,6 +9,27 @@
     padding: 5px;
 }
 
+    .menu.highlight {
+        outline-width: 2px;
+        outline-color: transparent;
+        outline-style: solid;
+        animation: highlight 1s;
+    }
+
+@keyframes highlight {
+    0% {
+        outline-color: transparent;
+    }
+
+    50% {
+        outline-color: yellow;
+    }
+
+    100% {
+        outline-color: transparent;
+    }
+}
+
 .menu ul {
     list-style: none;
     margin: 0;

@@ -8,9 +8,15 @@
 
 <DragAndDrop Text="@(string.IsNullOrEmpty(Tool) ? TextWhenUnavailable : TextWhenAvailable)"
              SubText="@(string.IsNullOrEmpty(Tool) ? SubTextWhenUnavailable : SubTextWhenAvailable)"
-             OnFile="OnFileAsync"></DragAndDrop>
-<ToolMenu></ToolMenu>
-<TextOutput></TextOutput>
+             OnFile="OnFileAsync"
+             OnDragEnd="OnDragEnd"
+             Tool="Tool is null ? null : ToolService.GetTool(Tool)"></DragAndDrop>
+<ToolMenu Highlight="HighlightToolMenu"></ToolMenu>
+
+@if (TextOutput is not null)
+{
+    <TextOutput TextData="@TextOutput"></TextOutput>
+}
 
 @code {
     private const string TextWhenAvailable = "Drag and Drop";
@@ -22,13 +28,29 @@
     [Parameter]
     public string? Tool { get; set; }
 
+    public TextData? TextOutput { get; set; }
+
+    public bool HighlightToolMenu { get; set; }
+
     private async Task OnFileAsync(BinData data)
     {
         if (Tool is null)
         {
+            HighlightToolMenu = true;
             return;
         }
 
-        await ToolService.ProcessFileAsync(Tool, data);
+        foreach (var output in await ToolService.ProcessFileAsync(Tool, data))
+        {
+            if (output is TextData textData)
+            {
+                TextOutput = textData;
+            }
+        }
+    }
+
+    private void OnDragEnd()
+    {
+        HighlightToolMenu = false;
     }
 }
