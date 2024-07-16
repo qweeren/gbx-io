@@ -1,4 +1,5 @@
-﻿using GbxIo.Components.Data;
+﻿using GbxIo.Components.Attributes;
+using GbxIo.Components.Data;
 using GbxIo.Components.Tools;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -41,10 +42,14 @@ public sealed class ToolService
         var inputType = genericArguments[0];
         var outputType = genericArguments[1]; // probably not needed, output can be type checked
 
-        return await ProcessToolAsync(tool, data, inputType);
+        var headerOnly = Attribute.IsDefined(toolType.GetMethods()
+            .First(m => m.Name == nameof(IoTool.ProcessAsync))
+            .GetParameters()[0], typeof(HeaderOnlyAttribute));
+
+        return await ProcessToolAsync(tool, data, inputType, headerOnly);
     }
 
-    private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType)
+    private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType, bool headerOnly)
     {
         if (inputType == typeof(BinData))
         {
@@ -61,7 +66,7 @@ public sealed class ToolService
             return await ProcessTextDataAsync(tool, data);
         }
 
-        return await ProcessSpecificGbxDataAsync(tool, data);
+        return await ProcessSpecificGbxDataAsync(tool, data, headerOnly);
     }
 
     private static async Task<IEnumerable<object>> ProcessBinDataAsync(IoTool tool, BinData data)
@@ -135,11 +140,11 @@ public sealed class ToolService
         return outputs;
     }
 
-    private async Task<IEnumerable<object>> ProcessSpecificGbxDataAsync(IoTool tool, BinData data)
+    private async Task<IEnumerable<object>> ProcessSpecificGbxDataAsync(IoTool tool, BinData data, bool headerOnly)
     {
         await using var ms = new MemoryStream(data.Data);
 
-        var gbx = await gbxService.ParseGbxAsync(ms);
+        var gbx = await gbxService.ParseGbxAsync(ms, headerOnly);
 
         if (gbx is not null)
         {
@@ -160,7 +165,7 @@ public sealed class ToolService
             {
                 await using var entryStream = entry.Open();
 
-                var entryGbx = await gbxService.ParseGbxAsync(entryStream);
+                var entryGbx = await gbxService.ParseGbxAsync(entryStream, headerOnly);
 
                 if (entryGbx is null)
                 {

@@ -19,11 +19,13 @@ public sealed class GbxService
         Gbx.LZO = new Lzo();
     }
 
-    public async Task<Gbx?> ParseGbxAsync(Stream stream)
+    public async ValueTask<Gbx?> ParseGbxAsync(Stream stream, bool headerOnly)
     {
         try
         {
-            return await Gbx.ParseAsync(stream, new() { Logger = logger });
+            return headerOnly
+                ? Gbx.ParseHeader(stream, new() { Logger = logger })
+                : await Gbx.ParseAsync(stream, new() { Logger = logger });
         }
         catch (NotAGbxException)
         {
