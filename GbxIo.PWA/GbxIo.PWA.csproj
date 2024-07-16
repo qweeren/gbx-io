@@ -14,7 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GbxIo.Components\GbxIo.Components.csproj" />
+      <ProjectReference Include="..\GbxIo.Components\GbxIo.Components.csproj">
+          <IsTrimmable>false</IsTrimmable>
+      </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
