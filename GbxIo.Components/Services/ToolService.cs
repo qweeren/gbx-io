@@ -93,7 +93,7 @@ public sealed class ToolService
 
         var outputs = new List<object>();
 
-        using var zipMs = new MemoryStream(data.Data);
+        await using var zipMs = new MemoryStream(data.Data);
 
         try
         {
@@ -101,7 +101,7 @@ public sealed class ToolService
 
             foreach (var entry in zip.Entries)
             {
-                using var entryStream = entry.Open();
+                await using var entryStream = entry.Open();
 
                 if (entry.Length < 4)
                 {
@@ -137,7 +137,7 @@ public sealed class ToolService
 
     private async Task<IEnumerable<object>> ProcessSpecificGbxDataAsync(IoTool tool, BinData data)
     {
-        using var ms = new MemoryStream(data.Data);
+        await using var ms = new MemoryStream(data.Data);
 
         var gbx = await gbxService.ParseGbxAsync(ms);
 
@@ -158,7 +158,7 @@ public sealed class ToolService
 
             foreach (var entry in zip.Entries)
             {
-                using var entryStream = entry.Open();
+                await using var entryStream = entry.Open();
 
                 var entryGbx = await gbxService.ParseGbxAsync(entryStream);
 
@@ -183,10 +183,5 @@ public sealed class ToolService
         }
 
         return outputs;
-    }
-
-    public async Task ProcessOutputAsync(object? output)
-    {
-
     }
 }

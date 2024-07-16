@@ -1,8 +1,6 @@
 ﻿@page "/{tool:nonfile?}"
 
-<PageTitle>Home</PageTitle>
-
-<GbxIoComponent></GbxIoComponent>
+<GbxIoComponent Tool="@Tool"></GbxIoComponent>
 
 @code {
     [Parameter]

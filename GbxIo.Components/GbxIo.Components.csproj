@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
@@ -14,10 +13,10 @@
   <ItemGroup>
     <PackageReference Include="BlazorMonaco" Version="3.2.0" />
     <PackageReference Include="ByteSize" Version="2.1.2" />
-    <PackageReference Include="GBX.NET" Version="2.0.5" />
-    <PackageReference Include="GBX.NET.LZO" Version="2.0.0" />
+    <PackageReference Include="GBX.NET" Version="2.0.6-beta1" />
+    <PackageReference Include="GBX.NET.LZO" Version="2.1.0-beta1" />
     <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
   </ItemGroup>
 
 </Project>

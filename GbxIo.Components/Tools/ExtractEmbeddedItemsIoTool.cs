@@ -16,7 +16,9 @@ public sealed class ExtractEmbeddedItemsIoTool(string endpoint, IServiceProvider
             throw new InvalidOperationException("No embedded items found.");
         }
 
-        var zipData = new BinData(Path.GetFileNameWithoutExtension(input.FilePath) + ".zip", input.Node.EmbeddedZipData);
+        var fileName = Path.GetFileNameWithoutExtension(input.FilePath) + ".zip";
+
+        var zipData = new BinData(fileName, input.Node.EmbeddedZipData);
 
         return Task.FromResult(zipData);
     }

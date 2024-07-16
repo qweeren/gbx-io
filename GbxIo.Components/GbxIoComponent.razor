@@ -7,6 +7,13 @@
 
 @rendermode InteractiveAuto
 
+<PageTitle>@GetTitle()</PageTitle>
+
+<HeadContent>
+    <meta property="og:title" content="@GetTitle()">
+    <meta name="twitter:title" content="@GetTitle()">
+</HeadContent>
+
 <DragAndDrop Text="@(string.IsNullOrEmpty(Tool) ? TextWhenUnavailable : TextWhenAvailable)"
              SubText="@(string.IsNullOrEmpty(Tool) ? SubTextWhenUnavailable : SubTextWhenAvailable)"
              OnFile="OnFileAsync"
@@ -33,7 +40,7 @@
 
     public bool HighlightToolMenu { get; set; }
 
-    private async Task OnFileAsync(BinData data)
+    async Task OnFileAsync(BinData data)
     {
         if (Tool is null)
         {
@@ -80,8 +87,22 @@
         }
     }
 
-    private void OnDragEnd()
+    void OnDragEnd()
     {
         HighlightToolMenu = false;
+    }
+
+    string GetTitle()
+    {
+        var title = "Gbx I/O";
+        var toolName = string.IsNullOrEmpty(Tool)
+            ? null : ToolService.GetTool(Tool)?.Name;
+
+        if (toolName is not null)
+        {
+            title += $" - {toolName}";
+        }
+
+        return title;
     }
 }

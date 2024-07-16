@@ -16,7 +16,7 @@ public sealed class GbxService
 
     static GbxService()
     {
-        Gbx.LZO = new MiniLZO();
+        Gbx.LZO = new Lzo();
     }
 
     public async Task<Gbx?> ParseGbxAsync(Stream stream)
