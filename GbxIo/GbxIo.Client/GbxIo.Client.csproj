@@ -17,4 +17,8 @@
     <ProjectReference Include="..\..\GbxIo.Components\GbxIo.Components.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+        <TrimmerRootAssembly Include="GBX.NET" />
+    </ItemGroup>
+
 </Project>

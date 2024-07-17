@@ -24,4 +24,8 @@
     </Content>
   </ItemGroup>
 
+    <ItemGroup>
+        <TrimmerRootAssembly Include="GBX.NET" />
+    </ItemGroup>
+
 </Project>
