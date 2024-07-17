@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+      <TrimMode>partial</TrimMode>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,9 +19,7 @@
     </PackageReference>
     <PackageReference Include="GBX.NET.Imaging.SkiaSharp" Version="1.1.0-beta2" />
     <PackageReference Include="GBX.NET.LZO" Version="2.1.0-beta2" />
-    <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.0">
-        <IsTrimmable>false</IsTrimmable>
-    </PackageReference>
+    <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
     <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.8" />
   </ItemGroup>
