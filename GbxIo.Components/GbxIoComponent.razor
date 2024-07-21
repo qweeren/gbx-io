@@ -59,8 +59,7 @@
             {
                 var ms = new MemoryStream(binData.Data);
 
-                using var streamRef = new DotNetStreamReference(ms);
-                await JS.InvokeVoidAsync("downloadFileFromStream", binData.FileName, streamRef);
+                await DownloadAsync(binData.FileName, ms);
                 continue;
             }
 
@@ -68,8 +67,7 @@
             {
                 var ms = new MemoryStream(gbxData.Data);
 
-                using var streamRef = new DotNetStreamReference(ms);
-                await JS.InvokeVoidAsync("downloadFileFromStream", gbxData.FileName, streamRef);
+                await DownloadAsync(gbxData.FileName, ms);
                 continue;
             }
 
@@ -80,8 +78,7 @@
                 gbx.Save(ms);
                 ms.Position = 0;
 
-                using var streamRef = new DotNetStreamReference(ms);
-                await JS.InvokeVoidAsync("downloadFileFromStream", gbx.FilePath, streamRef);
+                await DownloadAsync(gbx.FilePath, ms);
                 continue;
             }
         }
@@ -104,5 +101,11 @@
         }
 
         return title;
+    }
+
+    async Task DownloadAsync(string? fileName, MemoryStream ms)
+    {
+        using var streamRef = new DotNetStreamReference(ms);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }

@@ -55,6 +55,24 @@
     text-align: center;
 }
 
+.tool-problem {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    animation: fadeIn 0.3s;
+}
+
+.error {
+    color: #FF3D3D;
+}
+
+.warning {
+    color: #FFD700;
+}
+
 @keyframes linearGradientMoveClockwise {
     100% {
         background-position: 48px 0, -48px 100%, 0 -48px, 100% 48px;
@@ -64,5 +82,15 @@
 @keyframes linearGradientMoveCounterclockwise {
     100% {
         background-position: -48px 0, 48px 100%, 0 48px, 100% -48px;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
     }
 }

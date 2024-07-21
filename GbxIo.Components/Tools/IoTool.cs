@@ -1,4 +1,6 @@
-﻿namespace GbxIo.Components.Tools;
+﻿using GbxIo.Components.Exceptions;
+
+namespace GbxIo.Components.Tools;
 
 public abstract class IoTool<TInput, TOutput>(string endpoint, IServiceProvider provider)
     : IoTool(endpoint, provider)
@@ -9,7 +11,15 @@ public abstract class IoTool<TInput, TOutput>(string endpoint, IServiceProvider 
     {
         if (input is not TInput typedInput)
         {
-            throw new ArgumentException($"Input must be of type {typeof(TInput).Name}.", nameof(input));
+            var type = typeof(TInput);
+            var name = type.Name;
+            
+            if (type.IsGenericType)
+            {
+                name = $"{type.Name[..type.Name.IndexOf('`')]}<{string.Join(", ", type.GenericTypeArguments.Select(t => t.Name))}>";
+            }
+
+            throw new UnmatchingInputException($"Input must be of type {name}.");
         }
 
         return await ProcessAsync(typedInput);

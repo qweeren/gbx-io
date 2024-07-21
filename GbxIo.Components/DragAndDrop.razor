@@ -1,10 +1,13 @@
 ﻿@using GBX.NET
 @using System.IO.Compression
 @using GBX.NET.Engines.Game
+@using GbxIo.Components.Exceptions
+@using Microsoft.Extensions.Logging
 
 @rendermode InteractiveAuto
 
 @inject IJSRuntime JSRuntime
+@inject ILogger<DragAndDrop> Logger
 
 <div class="area @dropEnter @(clockwise ? "" : "counterclockwise")">
     <div class="logo">
@@ -23,8 +26,15 @@
 
         <div class="tool-info">
             <h2>@Tool.Name</h2>
-            <p>Input: <span style="color: yellow">@input</span>, Output: <span style="color: yellow">@output</span></p>
+            <p>Input: <span style="color: #FFD700">@input</span>, Output: <span style="color: #FFD700">@output</span></p>
             <p>@Tool.Result</p>
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(problemText))
+    {
+        <div class="tool-problem @problemClass">
+            @problemText
         </div>
     }
 
@@ -39,6 +49,8 @@
 @code {
     private string? dropEnter;
     private bool clockwise = true;
+    private string? problemText;
+    private string? problemClass;
 
     [Parameter]
     public EventCallback<BinData> OnFile { get; set; }
@@ -59,16 +71,43 @@
     {
         foreach (var file in e.GetMultipleFiles(int.MaxValue))
         {
-            using var stream = file.OpenReadStream(int.MaxValue);
-            var data = new byte[file.Size];
-            var bytesRead = await stream.ReadAsync(data);
+            await using var stream = file.OpenReadStream(int.MaxValue);
+            await using var ms = new MemoryStream((int)file.Size);
+            await stream.CopyToAsync(ms);
 
-            if (bytesRead != file.Size)
+            var data = ms.ToArray();
+
+            if (data.Length != file.Size)
             {
-                throw new Exception("Failed to read file");
+                problemText = $"{file.Name} - Failed to read file.";
+                problemClass = "error";
+
+                StateHasChanged();
+                await Task.Delay(100);
+                continue;
             }
 
-            await OnFile.InvokeAsync(new BinData(file.Name, data));
+            try
+            {
+                await OnFile.InvokeAsync(new BinData(file.Name, data));
+            }
+            catch (UnmatchingInputException ex)
+            {
+                problemText = $"{file.Name} - {ex.Message}";
+                problemClass = "warning";
+
+                StateHasChanged();
+                await Task.Delay(100);
+            }
+            catch (Exception ex)
+            {
+                problemText = $"{file.Name} - {ex.Message} - more details in Dev Console.";
+                problemClass = "error";
+
+                Logger.LogError(ex, "Failed to process file.");
+                StateHasChanged();
+                await Task.Delay(100);
+            }
         }
 
         await JSRuntime.InvokeVoidAsync("resetFileInput");
