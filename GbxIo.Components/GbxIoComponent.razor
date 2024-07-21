@@ -50,37 +50,52 @@
 
         foreach (var output in await ToolService.ProcessFileAsync(Tool, data))
         {
-            if (output is TextData textData)
+            await ProcessOutputAsync(output);
+        }
+    }
+
+    private async Task ProcessOutputAsync(object? output)
+    {
+        if (output is IEnumerable<object> enumerable)
+        {
+            foreach (var item in enumerable)
             {
-                TextOutput = textData;
+                await ProcessOutputAsync(item);
             }
 
-            if (output is BinData binData)
-            {
-                var ms = new MemoryStream(binData.Data);
+            return;
+        }
 
-                await DownloadAsync(binData.FileName, ms);
-                continue;
-            }
+        if (output is TextData textData)
+        {
+            TextOutput = textData;
+        }
 
-            if (output is GbxData gbxData)
-            {
-                var ms = new MemoryStream(gbxData.Data);
+        if (output is BinData binData)
+        {
+            var ms = new MemoryStream(binData.Data);
 
-                await DownloadAsync(gbxData.FileName, ms);
-                continue;
-            }
+            await DownloadAsync(binData.FileName, ms);
+            return;
+        }
 
-            if (output is Gbx gbx)
-            {
-                var ms = new MemoryStream();
+        if (output is GbxData gbxData)
+        {
+            var ms = new MemoryStream(gbxData.Data);
 
-                gbx.Save(ms);
-                ms.Position = 0;
+            await DownloadAsync(gbxData.FileName, ms);
+            return;
+        }
 
-                await DownloadAsync(gbx.FilePath, ms);
-                continue;
-            }
+        if (output is Gbx gbx)
+        {
+            var ms = new MemoryStream();
+
+            gbx.Save(ms);
+            ms.Position = 0;
+
+            await DownloadAsync(gbx.FilePath, ms);
+            return;
         }
     }
 

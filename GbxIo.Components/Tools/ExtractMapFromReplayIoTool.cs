@@ -28,9 +28,11 @@ public sealed class ExtractMapFromReplayIoTool(string endpoint, IServiceProvider
             mapName = mapName.Replace(ch, '_'); 
         }
 
-        return Task.FromResult(new Gbx<CGameCtnChallenge>(map)
+        return Task.FromResult(new Gbx<CGameCtnChallenge>(map, input.Header.Basic)
         {
-            FilePath = mapName + extension
+            FilePath = mapName + extension,
+            ClassIdRemapMode = input.ClassIdRemapMode,
+            PackDescVersion = input.PackDescVersion
         });
     }
 }
