@@ -10,21 +10,19 @@ public sealed class ExtractGhostsIoTool(string endpoint, IServiceProvider provid
 
     public override Task<IEnumerable<Gbx<CGameCtnGhost>>> ProcessAsync(Gbx input)
     {
-        string? fileName;
-        IEnumerable<CGameCtnGhost> ghosts;
+        var fileName = Path.GetFileName(input.FilePath);
+
+		IEnumerable<CGameCtnGhost> ghosts;
 
         switch (input)
         {
             case Gbx<CGameCtnReplayRecord> replay:
-                fileName = Path.GetFileName(replay.FilePath);
                 ghosts = replay.Node.GetGhosts();
                 break;
             case Gbx<CGameCtnMediaClip> clip:
-                fileName = Path.GetFileName(clip.FilePath);
                 ghosts = clip.Node.GetGhosts();
                 break;
             case Gbx<CGameCtnChallenge> challenge:
-                fileName = Path.GetFileName(challenge.FilePath);
                 ghosts = (challenge.Node.ClipIntro?.GetGhosts() ?? [])
                     .Concat(challenge.Node.ClipGroupInGame?.Clips.SelectMany(x => x.Clip.GetGhosts()) ?? [])
                     .Concat(challenge.Node.ClipGroupEndRace?.Clips.SelectMany(x => x.Clip.GetGhosts()) ?? [])

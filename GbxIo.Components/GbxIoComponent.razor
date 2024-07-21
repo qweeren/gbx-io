@@ -1,6 +1,7 @@
 ﻿@using GBX.NET
 @using System.IO.Compression
 @using GBX.NET.Exceptions
+@using System.Text
 
 @inject ToolService ToolService
 @inject IJSRuntime JS
@@ -69,6 +70,13 @@
         if (output is TextData textData)
         {
             TextOutput = textData;
+
+            if (textData.Format is "obj" or "mtl")
+            {
+                var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
+                await DownloadAsync(textData.FileName, ms);
+                return;
+            }
         }
 
         if (output is BinData binData)

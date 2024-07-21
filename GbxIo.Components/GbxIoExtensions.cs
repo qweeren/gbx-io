@@ -17,7 +17,8 @@ public static class GbxIoExtensions
         services.AddTool<ExtractThumbnailIoTool>("extract-thumbnail");
         services.AddTool<ExtractEmbeddedItemsIoTool>("extract-embedded-items");
         services.AddTool<ExtractGhostsIoTool>("extract-ghosts");
-        services.AddTool<ExtractInputsIoTool>("extract-inputs");
+		services.AddTool<ExtractMeshIoTool>("extract-mesh");
+		services.AddTool<ExtractInputsIoTool>("extract-inputs");
         services.AddTool<ExtractInputsTmiIoTool>("extract-inputs-tmi");
         services.AddTool<GbxToJsonIoTool>("gbx-to-json");
 

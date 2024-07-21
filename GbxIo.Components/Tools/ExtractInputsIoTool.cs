@@ -14,25 +14,23 @@ public class ExtractInputsIoTool(string endpoint, IServiceProvider provider)
     protected virtual string Format => "txt";
 
     public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input)
-    {
-        string? fileName;
+	{
+        var fileName = Path.GetFileName(input.FilePath);
+
         IEnumerable<IInput> replayInputs;
         IEnumerable<IEnumerable<IInput>> ghostInputs;
 
         switch (input)
         {
             case Gbx<CGameCtnGhost> ghost:
-                fileName = Path.GetFileName(ghost.FilePath);
                 replayInputs = [];
                 ghostInputs = GetGhostInputs(ghost);
                 break;
             case Gbx<CGameCtnReplayRecord> replay:
-                fileName = Path.GetFileName(replay.FilePath);
                 replayInputs = replay.Node.Inputs?.AsEnumerable() ?? [];
                 ghostInputs = replay.Node.GetGhosts().SelectMany(GetGhostInputs);
                 break;
             case Gbx<CGameCtnMediaClip> clip:
-                fileName = Path.GetFileName(clip.FilePath);
                 replayInputs = [];
                 ghostInputs = clip.Node.GetGhosts().SelectMany(GetGhostInputs);
                 break;
