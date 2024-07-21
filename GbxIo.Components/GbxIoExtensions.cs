@@ -20,7 +20,6 @@ public static class GbxIoExtensions
         services.AddTool<ExtractInputsIoTool>("extract-inputs");
         services.AddTool<ExtractInputsTmiIoTool>("extract-inputs-tmi");
         services.AddTool<GbxToJsonIoTool>("gbx-to-json");
-        services.AddTool<JsonToGbxIoTool>("json-to-gbx");
 
         return services;
     }

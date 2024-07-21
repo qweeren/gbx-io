@@ -19,7 +19,7 @@
 		return new StandaloneEditorConstructionOptions
 		{
 			AutomaticLayout = true,
-			Language = "json",
+			Language = TextData?.Format,
 			Theme = "vs-dark",
 			Value = TextData?.Text ?? ""
 		};

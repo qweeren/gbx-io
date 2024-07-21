@@ -1,6 +1,7 @@
 ﻿using GBX.NET;
 using GBX.NET.Exceptions;
 using GBX.NET.LZO;
+using GBX.NET.ZLib;
 using Microsoft.Extensions.Logging;
 
 namespace GbxIo.Components.Services;
@@ -17,6 +18,7 @@ public sealed class GbxService
     static GbxService()
     {
         Gbx.LZO = new Lzo();
+        Gbx.ZLib = new ZLib();
     }
 
     public async ValueTask<Gbx?> ParseGbxAsync(Stream stream, bool headerOnly)
