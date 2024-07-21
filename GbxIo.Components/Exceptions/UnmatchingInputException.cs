@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace GbxIo.Components.Exceptions;
+﻿namespace GbxIo.Components.Exceptions;
 
 public class UnmatchingInputException : Exception
 {
