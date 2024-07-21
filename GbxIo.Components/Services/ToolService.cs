@@ -36,8 +36,15 @@ public sealed class ToolService
         }
 
         var toolType = tool.GetType();
+        var baseType = GetIoToolBaseType(toolType);
 
-        var genericArguments = toolType.BaseType!.GetGenericArguments();
+        if (baseType is null)
+        {
+            logger.LogWarning("Tool {ToolId} is not an IoTool.", toolId);
+            return [];
+        }
+
+        var genericArguments = baseType.GetGenericArguments();
 
         var inputType = genericArguments[0];
         var outputType = genericArguments[1]; // probably not needed, output can be type checked
@@ -47,6 +54,23 @@ public sealed class ToolService
             .GetParameters()[0], typeof(HeaderOnlyAttribute));
 
         return await ProcessToolAsync(tool, data, inputType, headerOnly);
+    }
+
+    internal static Type? GetIoToolBaseType(Type toolType)
+    {
+        var baseType = toolType.BaseType;
+
+        while (baseType is not null)
+        {
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(IoTool<,>))
+            {
+                return baseType;
+            }
+
+            baseType = baseType.BaseType;
+        }
+
+        return baseType;
     }
 
     private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType, bool headerOnly)

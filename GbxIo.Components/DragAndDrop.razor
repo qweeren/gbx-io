@@ -26,7 +26,12 @@
 
         <div class="tool-info">
             <h2>@Tool.Name</h2>
-            <p>Input: <span style="color: #FFD700">@input</span>, Output: <span style="color: #FFD700">@output</span></p>
+
+            @if (!string.IsNullOrEmpty(input) && !string.IsNullOrEmpty(output))
+            {
+                <p>Input: <span style="color: #FFD700">@input</span>, Output: <span style="color: #FFD700">@output</span></p>
+            }
+            
             <p>@Tool.Result</p>
         </div>
     }
@@ -135,7 +140,7 @@
     {
         var toolType = tool.GetType();
 
-        var genericArgs = toolType.BaseType?.GetGenericArguments();
+        var genericArgs = ToolService.GetIoToolBaseType(toolType)?.GetGenericArguments();
 
         if (genericArgs is null || genericArgs.Length != 2)
         {
