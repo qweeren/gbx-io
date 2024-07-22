@@ -20,6 +20,7 @@ public static class GbxIoExtensions
 		services.AddTool<ExtractMeshIoTool>("extract-mesh");
 		services.AddTool<ExtractInputsIoTool>("extract-inputs");
         services.AddTool<ExtractInputsTmiIoTool>("extract-inputs-tmi");
+        services.AddTool<ChangeToOldWoodPhysicsIoTool>("change-to-old-wood-physics");
         services.AddTool<GbxToJsonIoTool>("gbx-to-json");
 
         return services;
