@@ -20,7 +20,7 @@ public sealed class ExtractInputsTmiIoTool(string endpoint, IServiceProvider pro
 
         foreach (var input in inputs)
         {
-            if (input is not Respawn or FakeFinishLine or FakeIsRaceRunning or FakeDontInverseAxis)
+            if (input is not Respawn and not FakeFinishLine and not FakeIsRaceRunning and not FakeDontInverseAxis)
             {
                 sb.Append(input.Time.TotalMilliseconds - 10 - start);
                 sb.Append(' ');
