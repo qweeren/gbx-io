@@ -26,17 +26,33 @@
     text-decoration: none;
     color: #FFF;
     transition: 0.2s;
-    background-color: #0F01;
-    border: 2px solid #363;
     border-radius: 2px;
     cursor: pointer;
-    width: 150px;
     text-align: center;
 }
 
-    .button:hover {
+.button-green {
+    width: 150px;
+    background-color: #0F01;
+    border: 2px solid #363;
+}
+
+    .button-green:hover {
         border: 2px solid #3A3;
         background: #0F02;
+        box-shadow: #222 0px 0px 8px inset;
+    }
+
+.button-blue {
+    border: 2px solid #39D;
+    background: #39D1;
+    border: 2px solid #346;
+    width: 48px;
+}
+
+    .button-blue:hover {
+        border: 2px solid #39D;
+        background: #39D4;
         box-shadow: #222 0px 0px 8px inset;
     }
 
@@ -49,11 +65,40 @@
     align-items: center;
     justify-content: right;
     width: 100%;
-    margin: 0 20px;
+}
+
+.info {
+    display: block;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #FFF;
+    transition: 0.2s;
+    border: 2px solid #333;
+    text-align: center;
+    margin: 0 5px;
+}
+
+.file {
+    position: relative;
+    width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.x {
+    position: absolute;
+    top: 0;
+    right: 8px;
+    color: #FF3D3D;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.x:hover {
+    color: #FF5D5D;
 }
 
 @keyframes goUp {
-
     0% {
         bottom: -600px;
     }

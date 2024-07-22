@@ -1,27 +1,117 @@
 ﻿@using BlazorMonaco.Editor
+@using System.Text
+
+@inject IJSRuntime JS
 
 <div class="text-output">
 	<div class="text-editor-wrapper">
-		<BlazorMonaco.Editor.StandaloneCodeEditor Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
+		<BlazorMonaco.Editor.StandaloneCodeEditor @ref="editor" Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
 	</div>
 	<div class="bottom">
-		<div class="button">Download</div>
-		<div class="right">Gbx.json</div>
+		<div class="button button-green" @onclick="DownloadAsync">Download</div>
+		<div class="right">
+			@if (TextData.Count > 1)
+			{
+				<div class="info">@(currentIndex + 1)/@TextData.Count</div>
+			}
+			<div class="button button-blue" @onclick="async () => await SetCurrentIndexAsync(currentIndex - 1)">&lt;</div>
+			@if (TextData.Count > currentIndex)
+            {
+				<div class="info file" title="@TextData[currentIndex].FileName">
+					@TextData[currentIndex].FileName
+					<div class="x" @onclick="RemoveTextDataAsync">x</div>
+				</div>
+			}
+			<div class="button button-blue" @onclick="async () => await SetCurrentIndexAsync(currentIndex + 1)">&gt;</div>
+		</div>
 	</div>
 </div>
 
 @code {
-	[Parameter]
-	public TextData? TextData { get; set; }
+	private int currentIndex;
+	private BlazorMonaco.Editor.StandaloneCodeEditor? editor;
 
-	private StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
+	[Parameter]
+	public List<TextData> TextData { get; set; } = new();
+
+	[Parameter]
+	public EventCallback OnEmpty { get; set; }
+
+	async Task SetCurrentIndexAsync(int value)
+	{
+		if (value < 0)
+		{
+			currentIndex = TextData.Count - 1;
+		}
+		else if (value >= TextData.Count)
+		{
+			currentIndex = 0;
+		}
+		else
+		{
+			currentIndex = value;
+		}
+
+		if (editor is null)
+		{
+			return;
+		}
+
+		if (TextData.Count == 0)
+		{
+			await editor.SetValue("");
+			await OnEmpty.InvokeAsync();
+			return;
+        }
+
+		var textData = TextData[currentIndex];
+		await Global.SetModelLanguage(JS, await editor.GetModel(), textData.Format);
+		await editor.SetValue(textData.Text);
+	}
+
+	public async Task SetToNewestIndexAsync()
+	{
+		await SetCurrentIndexAsync(TextData.Count - 1);
+	}
+
+	async Task RemoveTextDataAsync()
+	{
+		TextData.RemoveAt(currentIndex);
+
+		if (TextData.Count == 0)
+        {
+            currentIndex = 0;
+        }
+		else if (currentIndex >= TextData.Count)
+        {
+            currentIndex = TextData.Count - 1;
+        }
+
+		await SetCurrentIndexAsync(currentIndex);
+	}
+
+	async Task DownloadAsync()
+    {
+        if (TextData.Count == 0)
+        {
+            return;
+        }
+
+        var textData = TextData[currentIndex];
+
+		using var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
+		using var streamRef = new DotNetStreamReference(ms);
+		await JS.InvokeVoidAsync("downloadFileFromStream", textData.FileName, streamRef);
+    }
+
+	StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
 	{
 		return new StandaloneEditorConstructionOptions
 		{
 			AutomaticLayout = true,
-			Language = TextData?.Format,
+			Language = TextData.FirstOrDefault()?.Format,
 			Theme = "vs-dark",
-			Value = TextData?.Text ?? ""
+			Value = TextData.FirstOrDefault()?.Text ?? ""
 		};
 	}
 }

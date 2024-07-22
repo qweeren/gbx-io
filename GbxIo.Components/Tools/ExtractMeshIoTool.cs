@@ -9,7 +9,7 @@ namespace GbxIo.Components.Tools;
 public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider)
 	: IoTool<Gbx, IEnumerable<TextData>>(endpoint, provider)
 {
-	public override string Name => "Extract mesh (OBJ)";
+	public override string Name => "Extract mesh (OBJ+MTL)";
 
 	public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input)
 	{

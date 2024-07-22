@@ -22,12 +22,14 @@
              Tool="Tool is null ? null : ToolService.GetTool(Tool)"></DragAndDrop>
 <ToolMenu Highlight="HighlightToolMenu"></ToolMenu>
 
-@if (TextOutput is not null)
+@if (TextOutput?.Count > 0)
 {
-    <TextOutput TextData="@TextOutput"></TextOutput>
+    <TextOutput @ref="textOutput" TextData="@TextOutput" OnEmpty="StateHasChanged"></TextOutput>
 }
 
 @code {
+    private TextOutput? textOutput;
+
     private const string TextWhenAvailable = "Drag and Drop";
     private const string SubTextWhenAvailable = "files, or CLICK to select files";
 
@@ -37,7 +39,7 @@
     [Parameter]
     public string? Tool { get; set; }
 
-    public TextData? TextOutput { get; set; }
+    public List<TextData> TextOutput { get; set; } = new();
 
     public bool HighlightToolMenu { get; set; }
 
@@ -69,14 +71,20 @@
 
         if (output is TextData textData)
         {
-            TextOutput = textData;
+            TextOutput.Add(textData);
 
             if (textData.Format is "obj" or "mtl")
             {
                 var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
                 await DownloadAsync(textData.FileName, ms);
-                return;
             }
+
+            if (textOutput is not null)
+            {
+                await textOutput.SetToNewestIndexAsync();
+            }
+
+            return;
         }
 
         if (output is BinData binData)
