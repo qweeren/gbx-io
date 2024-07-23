@@ -13,7 +13,7 @@ public sealed class ChangeToOldWoodPhysicsIoTool(string endpoint, IServiceProvid
         const int oldWoodPhysics = 7;
 
         var output = input;
-        //output.Node.GenerateMapUid();
+        output.Node.GenerateMapUid();
 
         if (output.Node.Chunks.Get<CGameCtnChallenge.Chunk03043022>() is CGameCtnChallenge.Chunk03043022 chunk022)
         {
