@@ -11,6 +11,6 @@ public sealed class GbxToJsonIoTool(string endpoint, IServiceProvider provider)
 
     public override Task<TextData> ProcessAsync(Gbx input)
     {
-        return Task.FromResult(new TextData(input.FilePath, input.ToJson(), "json"));
+        return Task.FromResult(new TextData(input.FilePath + ".json", input.ToJson(), "json"));
     }
 }
