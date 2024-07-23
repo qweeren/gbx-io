@@ -21,6 +21,13 @@ public sealed class ExtractMapFromReplayIoTool(string endpoint, IServiceProvider
             | GameVersion.MP4
             | GameVersion.TM2020) ? ".Map.Gbx" : ".Challenge.Gbx";
 
+        map.CreateChunk<CGameCtnChallenge.HeaderChunk03043003>();
+
+        if (map.KindInHeader == CGameCtnChallenge.MapKind.EndMarker)
+        {
+            map.KindInHeader = CGameCtnChallenge.MapKind.Multi;
+        }
+
         var mapName = TextFormatter.Deformat(map.MapName);
 
         foreach (var ch in Path.GetInvalidFileNameChars())
