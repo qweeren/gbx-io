@@ -9,6 +9,7 @@ env:
   IMAGE_NAME: gbx-io
 
 permissions:
+  contents: read
   packages: write
 
 jobs:
