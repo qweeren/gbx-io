@@ -5,7 +5,7 @@ on:
     types: [ published ]
 
 env:
-  BUILD_DIR: GbxIo/GbxIo
+  BUILD_DIR: .
   IMAGE_NAME: gbx-io
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
     - name: Build Docker Image
       run: |
         cd $BUILD_DIR
-        docker build . -t ghcr.io/$OWNER_LC/$IMAGE_NAME -t ghcr.io/$OWNER_LC/$IMAGE_NAME:$VERSION -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$VERSION
+        docker build . -f GbxIo/GbxIo/Dockerfile -t ghcr.io/$OWNER_LC/$IMAGE_NAME -t ghcr.io/$OWNER_LC/$IMAGE_NAME:$VERSION -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:$VERSION
     
     - name: Push the Docker image to ghcr.io
       run: |
