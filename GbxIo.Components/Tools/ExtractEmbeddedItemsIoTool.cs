@@ -11,7 +11,7 @@ public sealed class ExtractEmbeddedItemsIoTool(string endpoint, IServiceProvider
 
     public override Task<BinData> ProcessAsync(Gbx<CGameCtnChallenge> input)
     {
-        if (input.Node.EmbeddedZipData is null)
+        if (input.Node.EmbeddedZipData is null || input.Node.EmbeddedZipData.Length == 0)
         {
             throw new InvalidOperationException("No embedded items found.");
         }
