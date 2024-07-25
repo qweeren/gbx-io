@@ -49,13 +49,14 @@
            @ondragleave="DragEnd"
            @ondragend="DragEnd"
            @onmouseout="MouseOut"
-           @ondrop="DragEnd" class="files" multiple="true" />
+           @ondrop="DragEnd" class="@filesClasses" multiple="true" />
 
 @code {
     private string? dropEnter;
     private bool clockwise = true;
     private string? problemText;
     private string? problemClass;
+    private string filesClasses = "files";
 
     [Parameter]
     public EventCallback<BinData> OnFile { get; set; }

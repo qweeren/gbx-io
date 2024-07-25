@@ -73,6 +73,10 @@
     color: #FFD700;
 }
 
+.client-available {
+    display: block;
+}
+
 @keyframes linearGradientMoveClockwise {
     100% {
         background-position: 48px 0, -48px 100%, 0 -48px, 100% 48px;
