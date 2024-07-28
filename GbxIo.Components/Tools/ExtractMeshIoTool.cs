@@ -27,11 +27,24 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
 				}
 				break;
 			case Gbx<CPlugPrefab> prefab:
-				foreach (var ent in prefab.Node.Ents)
+                for (int i = 0; i < prefab.Node.Ents.Length; i++)
 				{
-					
-				}
-				break;
+                    var ent = prefab.Node.Ents[i];
+
+					if (ent.Model is not CPlugStaticObjectModel staticObject)
+					{
+						continue;
+					}
+
+                    if (staticObject.Mesh is null)
+                    {
+						continue;
+                    }
+
+                    throw new Exception("CGameCommonItemEntityModel-based items are not yet supported.");
+                }
+
+				throw new Exception("Prefab has no mesh that would be supported.");
 			case Gbx<CGameItemModel> itemModel:
 				if (itemModel.Node.EntityModelEdition is CGameCommonItemEntityModelEdition { MeshCrystal: not null } edition)
 				{
@@ -41,6 +54,14 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
                     edition.MeshCrystal.ExportToObj(objWriter, mtlWriter, 3);
                     files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".obj", objWriter.ToString(), "obj"));
                     files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".mtl", mtlWriter.ToString(), "mtl"));
+                }
+				else if (itemModel.Node.EntityModel is CGameCommonItemEntityModel)
+				{
+					throw new Exception("CGameCommonItemEntityModel-based items are not yet supported.");
+				}
+				else
+                {
+                    throw new Exception("Item has no mesh that would be supported.");
                 }
 				break;
 			default:
