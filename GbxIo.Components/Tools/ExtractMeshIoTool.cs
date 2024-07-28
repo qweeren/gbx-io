@@ -55,6 +55,23 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
                     files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".obj", objWriter.ToString(), "obj"));
                     files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".mtl", mtlWriter.ToString(), "mtl"));
                 }
+				else if (itemModel.Node.EntityModelEdition is CGameBlockItem block)
+				{
+					foreach (var variant in block.CustomizedVariants)
+                    {
+						if (variant.Crystal is null)
+						{
+							continue;
+						}
+
+                        using var objWriter = new StringWriter();
+                        using var mtlWriter = new StringWriter();
+
+                        variant.Crystal.ExportToObj(objWriter, mtlWriter, 3);
+                        files.Add(new TextData($"{Path.GetFileNameWithoutExtension(input.FilePath)}_{variant.Id}.obj", objWriter.ToString(), "obj"));
+                        files.Add(new TextData($"{Path.GetFileNameWithoutExtension(input.FilePath)}_{variant.Id}.mtl", mtlWriter.ToString(), "mtl"));
+                    }
+				}
 				else if (itemModel.Node.EntityModel is CGameCommonItemEntityModel)
 				{
 					throw new Exception("CGameCommonItemEntityModel-based items are not yet supported.");
