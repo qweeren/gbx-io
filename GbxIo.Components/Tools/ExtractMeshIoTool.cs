@@ -41,10 +41,14 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
 						continue;
                     }
 
-                    throw new Exception("CGameCommonItemEntityModel-based items are not yet supported.");
-                }
+                    using var objWriter = new StringWriter();
+                    using var mtlWriter = new StringWriter();
 
-				throw new Exception("Prefab has no mesh that would be supported.");
+                    staticObject.Mesh.ExportToObj(objWriter, mtlWriter, 3);
+                    files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".obj", objWriter.ToString(), "obj"));
+                    files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".mtl", mtlWriter.ToString(), "mtl"));
+                }
+				break;
 			case Gbx<CGameItemModel> itemModel:
 				if (itemModel.Node.EntityModelEdition is CGameCommonItemEntityModelEdition { MeshCrystal: not null } edition)
 				{
@@ -72,10 +76,15 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
                         files.Add(new TextData($"{Path.GetFileNameWithoutExtension(input.FilePath)}_{variant.Id}.mtl", mtlWriter.ToString(), "mtl"));
                     }
 				}
-				else if (itemModel.Node.EntityModel is CGameCommonItemEntityModel)
+				else if (itemModel.Node.EntityModel is CGameCommonItemEntityModel { StaticObject.Mesh: not null } model)
 				{
-					throw new Exception("CGameCommonItemEntityModel-based items are not yet supported.");
-				}
+                    using var objWriter = new StringWriter();
+                    using var mtlWriter = new StringWriter();
+
+                    model.StaticObject.Mesh.ExportToObj(objWriter, mtlWriter, 3);
+                    files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".obj", objWriter.ToString(), "obj"));
+                    files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".mtl", mtlWriter.ToString(), "mtl"));
+                }
 				else
                 {
                     throw new Exception("Item has no mesh that would be supported.");
