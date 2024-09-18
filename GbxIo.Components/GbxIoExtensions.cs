@@ -15,6 +15,7 @@ public static class GbxIoExtensions
         services.AddTool<DecompressGbxIoTool>("decompress-gbx");
         services.AddTool<ExtractMapFromReplayIoTool>("extract-map-from-replay");
         services.AddTool<ExtractThumbnailIoTool>("extract-thumbnail");
+        services.AddTool<OptimizeEmbeddedItemsIoTool>("optimize-embedded-items");
         services.AddTool<ExtractEmbeddedItemsIoTool>("extract-embedded-items");
         services.AddTool<ExtractGhostsIoTool>("extract-ghosts");
 		services.AddTool<ExtractMeshIoTool>("extract-mesh");

@@ -22,6 +22,7 @@
     <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.1" />
     <PackageReference Include="GBX.NET.ZLib" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+    <PackageReference Include="SharpCompress" Version="0.38.0" />
     <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.8" />
   </ItemGroup>
 
