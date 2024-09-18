@@ -31,7 +31,16 @@ public sealed class OptimizeEmbeddedItemsIoTool(string endpoint, IServiceProvide
             {
                 var ms = new MemoryStream();
                 using var entryStream = entry.OpenEntryStream();
-                entryStream.CopyTo(ms);
+
+                if (entry.Key?.EndsWith(".gbx", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    Gbx.Decompress(input: entryStream, output: ms);
+                }
+                else
+                {
+                    entryStream.CopyTo(ms);
+                }
+
                 var zipEntry = zipArchive.AddEntry(entry.Key!, ms, true);
             }
 
