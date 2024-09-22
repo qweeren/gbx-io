@@ -90,8 +90,17 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
                     throw new Exception("Item has no mesh that would be supported.");
                 }
 				break;
-			default:
-				throw new InvalidOperationException("Only Item.Gbx, Block.Gbx, Solid.Gbx, and Prefab.Gbx is supported.");
+			case Gbx<CPlugSolid2Model> solid2:
+				using (var objWriter = new StringWriter())
+				using (var mtlWriter = new StringWriter())
+				{
+                    solid2.Node.ExportToObj(objWriter, mtlWriter, 3);
+					files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".obj", objWriter.ToString(), "obj"));
+					files.Add(new TextData(Path.GetFileNameWithoutExtension(input.FilePath) + ".mtl", mtlWriter.ToString(), "mtl"));
+				}
+				break;
+            default:
+				throw new InvalidOperationException("Only Item.Gbx, Block.Gbx, Solid.Gbx, Mesh.Gbx, and Prefab.Gbx is supported.");
 		}
 
 		return Task.FromResult(files.AsEnumerable());
