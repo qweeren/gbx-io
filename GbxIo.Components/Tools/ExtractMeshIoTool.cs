@@ -100,7 +100,7 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
 				}
 				break;
             default:
-				throw new InvalidOperationException("Only Item.Gbx, Block.Gbx, Solid.Gbx, Mesh.Gbx, and Prefab.Gbx is supported.");
+				throw new InvalidOperationException("Only Item.Gbx, Block.Gbx, Mesh.Gbx, Solid.Gbx, and Prefab.Gbx is supported.");
 		}
 
 		return Task.FromResult(files.AsEnumerable());
