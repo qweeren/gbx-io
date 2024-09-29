@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="BlazorMonaco" Version="3.2.0" />
     <PackageReference Include="ByteSize" Version="2.1.2" />
-    <PackageReference Include="GBX.NET" Version="2.0.7">
+    <PackageReference Include="GBX.NET" Version="2.0.8">
       <IsTrimmable>false</IsTrimmable>
     </PackageReference>
     <PackageReference Include="GBX.NET.Imaging.SkiaSharp" Version="1.1.0" />
