@@ -6,7 +6,6 @@ on:
 
 env:
   IMAGE_NAME: gbx-io
-  BUILD_CONTEXT: GbxIo/GbxIo
 
 jobs:
   build-and-push:
@@ -49,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/amd64,linux/arm64
-          context: ${{ env.BUILD_CONTEXT }}
+          file: GbxIo/GbxIo/Dockerfile
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           push: true
