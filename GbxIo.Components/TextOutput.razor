@@ -1,5 +1,6 @@
 ﻿@using BlazorMonaco.Editor
 @using System.Text
+@using System.IO.Compression
 
 @inject IJSRuntime JS
 
@@ -63,7 +64,7 @@
 			await editor.SetValue("");
 			await OnEmpty.InvokeAsync();
 			return;
-        }
+		}
 
 		var textData = TextData[currentIndex];
 		await Global.SetModelLanguage(JS, await editor.GetModel(), textData.Format);
@@ -80,25 +81,25 @@
 		TextData.RemoveAt(currentIndex);
 
 		if (TextData.Count == 0)
-        {
-            currentIndex = 0;
-        }
+		{
+			currentIndex = 0;
+		}
 		else if (currentIndex >= TextData.Count)
-        {
-            currentIndex = TextData.Count - 1;
-        }
+		{
+			currentIndex = TextData.Count - 1;
+		}
 
 		await SetCurrentIndexAsync(currentIndex);
 	}
 
 	async Task DownloadAsync()
-    {
-        if (TextData.Count == 0)
-        {
-            return;
-        }
+	{
+		if (TextData.Count == 0)
+		{
+			return;
+		}
 
-        var textData = TextData[currentIndex];
+		var textData = TextData[currentIndex];
 
 		using var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
 		using var streamRef = new DotNetStreamReference(ms);
@@ -106,6 +107,36 @@
 	}
 
 	async Task DownloadAllAsync()
+	{
+		if (TextData.Count <= 10)
+		{
+			await DownloadAllIndividuallyAsync();
+			return;
+		}
+
+		using var ms = new MemoryStream();
+		using (var zip = new ZipArchive(ms, ZipArchiveMode.Create, leaveOpen: true))
+		{
+			foreach (var textData in TextData)
+			{
+				if (string.IsNullOrWhiteSpace(textData.FileName))
+				{
+					continue;
+				}
+
+				var entry = zip.CreateEntry(textData.FileName);
+				using var entryStream = entry.Open();
+				await entryStream.WriteAsync(Encoding.UTF8.GetBytes(textData.Text));
+			}
+		}
+
+		ms.Position = 0;
+
+		using var streamRef = new DotNetStreamReference(ms);
+		await JS.InvokeVoidAsync("downloadFileFromStream", $"Gbx I/O - {TextData.Count} files.zip", streamRef);
+	}
+
+	async Task DownloadAllIndividuallyAsync()
 	{
 		foreach (var textData in TextData)
 		{
