@@ -32,7 +32,6 @@
 }
 
 .button-green {
-    width: 150px;
     background-color: #0F01;
     border: 2px solid #363;
 }
@@ -58,6 +57,7 @@
 
 .bottom {
     display: flex;
+    gap: 5px;
 }
 
 .right {

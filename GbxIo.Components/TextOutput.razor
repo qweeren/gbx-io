@@ -8,7 +8,8 @@
 		<BlazorMonaco.Editor.StandaloneCodeEditor @ref="editor" Id="text-editor" CssClass="text-editor" ConstructionOptions="EditorConstructionOptions"></BlazorMonaco.Editor.StandaloneCodeEditor>
 	</div>
 	<div class="bottom">
-		<div class="button button-green" @onclick="DownloadAsync">Download</div>
+		<div class="button button-green" style="width: 150px" @onclick="DownloadAsync">Download</div>
+		<div class="button button-green" style="width: 50px" @onclick="DownloadAllAsync">All</div>
 		<div class="right">
 			@if (TextData.Count > 1)
 			{
@@ -102,7 +103,17 @@
 		using var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
 		using var streamRef = new DotNetStreamReference(ms);
 		await JS.InvokeVoidAsync("downloadFileFromStream", textData.FileName, streamRef);
-    }
+	}
+
+	async Task DownloadAllAsync()
+	{
+		foreach (var textData in TextData)
+		{
+			using var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
+			using var streamRef = new DotNetStreamReference(ms);
+			await JS.InvokeVoidAsync("downloadFileFromStream", textData.FileName, streamRef);
+		}
+	}
 
 	StandaloneEditorConstructionOptions EditorConstructionOptions(StandaloneCodeEditor editor)
 	{
