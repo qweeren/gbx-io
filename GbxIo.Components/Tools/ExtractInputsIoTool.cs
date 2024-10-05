@@ -42,14 +42,14 @@ public class ExtractInputsIoTool(string endpoint, IServiceProvider provider)
 
         if (replayInputs.Any())
         {
-            inputFiles.Add(new TextData("Replay.txt", CreateInputText(replayInputs), Format));
+            inputFiles.Add(new TextData(Path.GetFileNameWithoutExtension(fileName) + ".txt", CreateInputText(replayInputs), Format));
         }
 
         var i = 0;
 
         foreach (var inputs in ghostInputs.Where(x => x.Any()))
         {
-            inputFiles.Add(new TextData(Path.Combine($"{GbxPath.GetFileNameWithoutExtension(fileName ?? "Ghost")}_{++i:00}.txt"), CreateInputText(inputs), Format));
+            inputFiles.Add(new TextData($"{GbxPath.GetFileNameWithoutExtension(fileName ?? "Ghost")}_{++i:00}.txt", CreateInputText(inputs), Format));
         }
 
         return Task.FromResult(inputFiles.AsEnumerable());
@@ -57,7 +57,7 @@ public class ExtractInputsIoTool(string endpoint, IServiceProvider provider)
 
     private static IEnumerable<IEnumerable<IInput>> GetGhostInputs(CGameCtnGhost ghost)
     {
-        IEnumerable<IEnumerable<IInput>> ghostInputs = [ghost.Inputs];
+        IEnumerable<IEnumerable<IInput>> ghostInputs = [ghost.Inputs ?? []];
 
         if (ghost.PlayerInputs is not null)
         {
