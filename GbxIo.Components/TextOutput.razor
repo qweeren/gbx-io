@@ -133,7 +133,7 @@
 		ms.Position = 0;
 
 		using var streamRef = new DotNetStreamReference(ms);
-		await JS.InvokeVoidAsync("downloadFileFromStream", $"Gbx I/O - {TextData.Count} files.zip", streamRef);
+		await JS.InvokeVoidAsync("downloadFileFromStream", $"Gbx IO - {TextData.Count} files.zip", streamRef);
 	}
 
 	async Task DownloadAllIndividuallyAsync()

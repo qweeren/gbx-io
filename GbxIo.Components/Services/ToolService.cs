@@ -130,6 +130,11 @@ public sealed class ToolService
 
             foreach (var entry in zip.Entries)
             {
+                if (string.IsNullOrEmpty(entry.Name))
+                {
+                    continue;
+                }
+
                 await using var entryStream = entry.Open();
 
                 if (entry.Length < 4)
@@ -138,22 +143,28 @@ public sealed class ToolService
                     continue;
                 }
 
-                var entryData = new byte[4];
-                await entryStream.ReadAsync(entryData);
+                var entryMagicData = new byte[4];
+                await entryStream.ReadAsync(entryMagicData);
 
-                if (entryData[0] != 'G' || entryData[1] != 'B' || entryData[2] != 'X')
+                if (entryMagicData[0] != 'G' || entryMagicData[1] != 'B' || entryMagicData[2] != 'X')
                 {
                     logger.LogWarning("Invalid GBX data.");
                     continue;
                 }
 
-                var gbxData = new GbxData(entry.Name, entryData);
+                await using var ms = new MemoryStream();
+                await ms.WriteAsync(entryMagicData);
+                await entryStream.CopyToAsync(ms);
+
+                var gbxData = new GbxData(entry.FullName, ms.ToArray());
                 var output = await tool.ProcessAsync(gbxData);
 
                 if (output is not null)
                 {
                     outputs.Add(output);
                 }
+
+                tool.Result = null;
             }
         }
         catch (InvalidDataException)

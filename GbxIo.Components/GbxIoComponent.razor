@@ -51,19 +51,45 @@
             return;
         }
 
-        foreach (var output in await ToolService.ProcessFileAsync(Tool, data))
+        using var msZip = new MemoryStream();
+        using (var zip = new ZipArchive(msZip, ZipArchiveMode.Create, leaveOpen: true))
         {
-            await ProcessOutputAsync(output);
+            foreach (var output in await ToolService.ProcessFileAsync(Tool, data))
+            {
+                await ProcessOutputAsync(output, zip);
+            }
         }
+
+        if (msZip.Length == 0)
+        {
+            return;
+        }
+
+        msZip.Position = 0;
+        var actualEntriesCount = 0;
+        var hasFolders = false;
+        using (var zipVerify = new ZipArchive(msZip, ZipArchiveMode.Read, leaveOpen: true))
+        {
+            actualEntriesCount = zipVerify.Entries.Count(x => !string.IsNullOrEmpty(x.Name));
+            hasFolders = zipVerify.Entries.Any(x => x.FullName.Contains("/"));
+        }
+
+        if (!hasFolders)
+        {
+            return;
+        }
+
+        msZip.Position = 0;
+        await DownloadAsync($"Gbx IO - {actualEntriesCount} files.zip", msZip);
     }
 
-    private async Task ProcessOutputAsync(object? output)
+    private async Task ProcessOutputAsync(object? output, ZipArchive zip)
     {
         if (output is IEnumerable<object> enumerable)
         {
             foreach (var item in enumerable)
             {
-                await ProcessOutputAsync(item);
+                await ProcessOutputAsync(item, zip);
             }
 
             return;
@@ -76,7 +102,7 @@
             if (textData.Format is "obj" or "mtl")
             {
                 var ms = new MemoryStream(Encoding.UTF8.GetBytes(textData.Text));
-                await DownloadAsync(textData.FileName, ms);
+                await DownloadOrAddToZipAsync(textData.FileName, ms, zip);
             }
 
             if (textOutput is not null)
@@ -90,28 +116,38 @@
         if (output is BinData binData)
         {
             var ms = new MemoryStream(binData.Data);
-
-            await DownloadAsync(binData.FileName, ms);
+            await DownloadOrAddToZipAsync(binData.FileName, ms, zip);
             return;
         }
 
         if (output is GbxData gbxData)
         {
             var ms = new MemoryStream(gbxData.Data);
-
-            await DownloadAsync(gbxData.FileName, ms);
+            await DownloadOrAddToZipAsync(gbxData.FileName, ms, zip);
             return;
         }
 
         if (output is Gbx gbx)
         {
             var ms = new MemoryStream();
-
             gbx.Save(ms);
             ms.Position = 0;
-
-            await DownloadAsync(gbx.FilePath, ms);
+            await DownloadOrAddToZipAsync(gbx.FilePath, ms, zip);
             return;
+        }
+    }
+
+    async Task DownloadOrAddToZipAsync(string? fileName, MemoryStream ms, ZipArchive zip)
+    {
+        if (fileName?.Contains("/") == true)
+        {
+            var entry = zip.CreateEntry(fileName);
+            using var entryStream = entry.Open();
+            await ms.CopyToAsync(entryStream);
+        }
+        else
+        {
+            await DownloadAsync(fileName, ms);
         }
     }
 
