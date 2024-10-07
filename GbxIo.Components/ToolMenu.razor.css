@@ -43,7 +43,7 @@
 
         .menu ul li a {
             display: block;
-            padding: 5px;
+            padding: 7px;
             text-decoration: none;
             color: #FFF;
             transition: 0.2s;
@@ -68,7 +68,9 @@
 .footer {
     display: flex;
     padding: 15px 15px 8px 15px;
-    font-size: 12px;
+    font-size: 0.67rem;
+    align-items: center;
+    gap: 7px;
 }
 
     .footer > div {
