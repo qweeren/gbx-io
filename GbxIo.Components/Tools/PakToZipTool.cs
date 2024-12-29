@@ -25,12 +25,12 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 
         var hashes = await GetFileHashesAsync();
 
+        var extractedFiles = 0;
+        var processedFiles = 0;
+
         await using var msOutput = new MemoryStream();
         using (var zip = new ZipArchive(msOutput, ZipArchiveMode.Create, true))
         {
-            var extractedFiles = 0;
-            var processedFiles = 0;
-
             foreach (var file in pak.Files.Values)
             {
                 var fileName = hashes.GetValueOrDefault(file.Name)?.Replace('\\', Path.DirectorySeparatorChar) ?? file.Name;
@@ -74,7 +74,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
             }
         }
 
-        await ReportAsync($"{pak.Files.Count}/{pak.Files.Count} (100%)", CancellationToken.None);
+        await ReportAsync($"Extracted files: {extractedFiles}/{processedFiles}/{pak.Files.Count} (100%)", CancellationToken.None);
 
         return new BinData($"{name}.zip", msOutput.ToArray());
     }

@@ -23,4 +23,6 @@ RUN dotnet publish -c $BUILD_CONFIGURATION -a $TARGETARCH -o /app --no-restore
 
 # final stage/image
 FROM nginx:alpine
+EXPOSE 8080
+COPY GbxIo.PWA/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /app/wwwroot /usr/share/nginx/html
