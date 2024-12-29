@@ -11,7 +11,7 @@ public sealed class OptimizeEmbeddedItemsIoTool(string endpoint, IServiceProvide
 {
     public override string Name => "Optimize embedded items";
 
-    public override Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnChallenge> input)
+    public override async Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnChallenge> input, CancellationToken cancellationToken)
     {
         if (input.Node.EmbeddedZipData is null || input.Node.EmbeddedZipData.Length == 0)
         {
@@ -49,12 +49,12 @@ public sealed class OptimizeEmbeddedItemsIoTool(string endpoint, IServiceProvide
 
         var optimizedByteCount = input.Node.EmbeddedZipData.Length - outputStream.Length;
 
-        Result = optimizedByteCount >= 0
+        await ReportAsync(optimizedByteCount >= 0
             ? $"Embedded data optimized by {optimizedByteCount / (double)input.Node.EmbeddedZipData.Length:P} ({ByteSize.FromBytes(optimizedByteCount)})."
-            : $"Embedded data unfortunately increased by {Math.Abs(optimizedByteCount) / (double)input.Node.EmbeddedZipData.Length:P} ({ByteSize.FromBytes(Math.Abs(optimizedByteCount))}).";
+            : $"Embedded data unfortunately increased by {Math.Abs(optimizedByteCount) / (double)input.Node.EmbeddedZipData.Length:P} ({ByteSize.FromBytes(Math.Abs(optimizedByteCount))}).", cancellationToken);
 
         input.Node.EmbeddedZipData = outputStream.ToArray();
 
-        return Task.FromResult(input);
+        return input;
     }
 }

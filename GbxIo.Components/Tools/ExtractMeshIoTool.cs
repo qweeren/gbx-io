@@ -11,7 +11,7 @@ public sealed class ExtractMeshIoTool(string endpoint, IServiceProvider provider
 {
 	public override string Name => "Extract mesh (OBJ+MTL)";
 
-	public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input)
+	public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input, CancellationToken cancellationToken)
 	{
 		var files = new List<TextData>();
 

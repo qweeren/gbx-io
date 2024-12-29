@@ -9,7 +9,7 @@ public sealed class ExtractMapFromReplayIoTool(string endpoint, IServiceProvider
 {
     public override string Name => "Extract map from replay";
 
-    public override Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnReplayRecord> input)
+    public override Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnReplayRecord> input, CancellationToken cancellationToken)
     {
         var map = input.Node.Challenge ?? throw new InvalidOperationException("No map found.");
 

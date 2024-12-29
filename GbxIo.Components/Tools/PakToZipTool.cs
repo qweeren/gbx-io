@@ -13,7 +13,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 
     public override string Name => "Pak to ZIP (TMUF)";
 
-    public override async Task<BinData> ProcessAsync(BinData input)
+    public override async Task<BinData> ProcessAsync(BinData input, CancellationToken cancellationToken)
     {
         using var msInput = new MemoryStream(input.Data);
 
@@ -21,23 +21,30 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 
         var key = await GetKeyAsync(name);
 
-        await using var pak = await Pak.ParseAsync(msInput, key);
+        await using var pak = await Pak.ParseAsync(msInput, key, cancellationToken);
 
         var hashes = await GetFileHashesAsync();
 
         await using var msOutput = new MemoryStream();
         using (var zip = new ZipArchive(msOutput, ZipArchiveMode.Create, true))
         {
+            var processedFiles = 0;
+            var prevPercentage = 0;
             foreach (var file in pak.Files.Values)
             {
                 var fileName = hashes.GetValueOrDefault(file.Name)?.Replace('\\', Path.DirectorySeparatorChar) ?? file.Name;
                 var fullPath = Path.Combine(file.FolderPath, fileName);
 
-                Result = fullPath;
+                var percentage = (int)(processedFiles / (double)pak.Files.Count * 100);
+                if (percentage != prevPercentage)
+                {
+                    await ReportAsync($"{percentage}%", cancellationToken);
+                    prevPercentage = percentage;
+                }
 
                 try
                 {
-                    var gbx = await pak.OpenGbxFileAsync(file);
+                    var gbx = await pak.OpenGbxFileAsync(file, cancellationToken: cancellationToken);
 
                     var entry = zip.CreateEntry(fullPath);
                     await using var stream = entry.Open();
@@ -61,6 +68,8 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
                 {
 
                 }
+
+                processedFiles++;
             }
         }
 

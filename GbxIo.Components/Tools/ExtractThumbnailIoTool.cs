@@ -12,7 +12,7 @@ public sealed class ExtractThumbnailIoTool(string endpoint, IServiceProvider pro
 {
     public override string Name => "Extract thumbnail/icon";
 
-    public override async Task<BinData?> ProcessAsync([HeaderOnly] Gbx input)
+    public override async Task<BinData?> ProcessAsync([HeaderOnly] Gbx input, CancellationToken cancellationToken)
     {
         if (input is Gbx<CGameCtnChallenge> gbxMap)
         {

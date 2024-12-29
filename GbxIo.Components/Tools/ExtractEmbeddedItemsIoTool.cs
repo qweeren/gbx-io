@@ -9,7 +9,7 @@ public sealed class ExtractEmbeddedItemsIoTool(string endpoint, IServiceProvider
 {
     public override string Name => "Extract embedded items";
 
-    public override Task<BinData> ProcessAsync(Gbx<CGameCtnChallenge> input)
+    public override Task<BinData> ProcessAsync(Gbx<CGameCtnChallenge> input, CancellationToken cancellationToken)
     {
         if (input.Node.EmbeddedZipData is null || input.Node.EmbeddedZipData.Length == 0)
         {

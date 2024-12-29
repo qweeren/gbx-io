@@ -51,10 +51,12 @@
             return;
         }
 
+        using var cts = new CancellationTokenSource();
+
         using var msZip = new MemoryStream();
         using (var zip = new ZipArchive(msZip, ZipArchiveMode.Create, leaveOpen: true))
         {
-            foreach (var output in await ToolService.ProcessFileAsync(Tool, data))
+            foreach (var output in await ToolService.ProcessFileAsync(Tool, data, cts.Token))
             {
                 await ProcessOutputAsync(output, zip);
             }

@@ -8,7 +8,7 @@ public sealed class ChangeToOldWoodPhysicsIoTool(string endpoint, IServiceProvid
 {
     public override string Name => "Change to old wood physics";
 
-    public override Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnChallenge> input)
+    public override Task<Gbx<CGameCtnChallenge>> ProcessAsync(Gbx<CGameCtnChallenge> input, CancellationToken cancellationToken)
     {
         const int oldWoodPhysics = 7;
 

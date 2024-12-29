@@ -8,7 +8,7 @@ public sealed class ExtractGhostsIoTool(string endpoint, IServiceProvider provid
 {
     public override string Name => "Extract ghosts";
 
-    public override Task<IEnumerable<Gbx<CGameCtnGhost>>> ProcessAsync(Gbx input)
+    public override Task<IEnumerable<Gbx<CGameCtnGhost>>> ProcessAsync(Gbx input, CancellationToken cancellationToken)
     {
         var fileName = Path.GetFileName(input.FilePath);
 

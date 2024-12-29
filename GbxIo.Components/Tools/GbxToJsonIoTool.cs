@@ -9,7 +9,7 @@ public sealed class GbxToJsonIoTool(string endpoint, IServiceProvider provider)
 {
     public override string Name => "Gbx to JSON";
 
-    public override Task<TextData> ProcessAsync(Gbx input)
+    public override Task<TextData> ProcessAsync(Gbx input, CancellationToken cancellationToken)
     {
         return Task.FromResult(new TextData(input.FilePath + ".json", input.ToJson(), "json"));
     }

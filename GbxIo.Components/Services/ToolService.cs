@@ -25,7 +25,7 @@ public sealed class ToolService
         return serviceProvider.GetKeyedService<IoTool>(toolId);
     }
 
-    public async Task<IEnumerable<object>> ProcessFileAsync(string toolId, BinData data)
+    public async Task<IEnumerable<object>> ProcessFileAsync(string toolId, BinData data, CancellationToken cancellationToken)
     {
         var tool = serviceProvider.GetKeyedService<IoTool>(toolId);
 
@@ -53,7 +53,7 @@ public sealed class ToolService
             .First(m => m.Name == nameof(IoTool.ProcessAsync))
             .GetParameters()[0], typeof(HeaderOnlyAttribute));
 
-        return await ProcessToolAsync(tool, data, inputType, headerOnly);
+        return await ProcessToolAsync(tool, data, inputType, headerOnly, cancellationToken);
     }
 
     internal static Type? GetIoToolBaseType(Type toolType)
@@ -73,39 +73,39 @@ public sealed class ToolService
         return baseType;
     }
 
-    private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType, bool headerOnly)
+    private async Task<IEnumerable<object>> ProcessToolAsync(IoTool tool, BinData data, Type inputType, bool headerOnly, CancellationToken cancellationToken)
     {
         if (inputType == typeof(BinData))
         {
-            return await ProcessBinDataAsync(tool, data);
+            return await ProcessBinDataAsync(tool, data, cancellationToken);
         }
 
         if (inputType == typeof(GbxData))
         {
-            return await ProcessGbxDataAsync(tool, data);
+            return await ProcessGbxDataAsync(tool, data, cancellationToken);
         }
 
         if (inputType == typeof(TextData))
         {
-            return await ProcessTextDataAsync(tool, data);
+            return await ProcessTextDataAsync(tool, data, cancellationToken);
         }
 
-        return await ProcessSpecificGbxDataAsync(tool, data, headerOnly);
+        return await ProcessSpecificGbxDataAsync(tool, data, headerOnly, cancellationToken);
     }
 
-    private static async Task<IEnumerable<object>> ProcessBinDataAsync(IoTool tool, BinData data)
+    private static async Task<IEnumerable<object>> ProcessBinDataAsync(IoTool tool, BinData data, CancellationToken cancellationToken)
     {
-        var output = await tool.ProcessAsync(data);
+        var output = await tool.ProcessAsync(data, cancellationToken);
         return output is null ? [] : [output];
     }
 
-    private static async Task<IEnumerable<object>> ProcessTextDataAsync(IoTool tool, BinData data)
+    private static async Task<IEnumerable<object>> ProcessTextDataAsync(IoTool tool, BinData data, CancellationToken cancellationToken)
     {
-        var output = await tool.ProcessAsync(data.ToTextData());
+        var output = await tool.ProcessAsync(data.ToTextData(), cancellationToken);
         return output is null ? [] : [output];
     }
 
-    private async Task<IEnumerable<object>> ProcessGbxDataAsync(IoTool tool, BinData data)
+    private async Task<IEnumerable<object>> ProcessGbxDataAsync(IoTool tool, BinData data, CancellationToken cancellationToken)
     {
         if (data.Data.Length < 4)
         {
@@ -116,7 +116,7 @@ public sealed class ToolService
         if (data.Data[0] == 'G' && data.Data[1] == 'B' && data.Data[2] == 'X')
         {
             var gbxData = new GbxData(data.FileName, data.Data);
-            var output = await tool.ProcessAsync(gbxData);
+            var output = await tool.ProcessAsync(gbxData, cancellationToken);
             return output is null ? [] : [output];
         }
 
@@ -144,7 +144,7 @@ public sealed class ToolService
                 }
 
                 var entryMagicData = new byte[4];
-                await entryStream.ReadAsync(entryMagicData);
+                await entryStream.ReadAsync(entryMagicData, cancellationToken);
 
                 if (entryMagicData[0] != 'G' || entryMagicData[1] != 'B' || entryMagicData[2] != 'X')
                 {
@@ -153,18 +153,19 @@ public sealed class ToolService
                 }
 
                 await using var ms = new MemoryStream();
-                await ms.WriteAsync(entryMagicData);
-                await entryStream.CopyToAsync(ms);
+                await ms.WriteAsync(entryMagicData, cancellationToken);
+                await entryStream.CopyToAsync(ms, cancellationToken);
 
                 var gbxData = new GbxData(entry.FullName, ms.ToArray());
-                var output = await tool.ProcessAsync(gbxData);
+                var output = await tool.ProcessAsync(gbxData, cancellationToken);
 
                 if (output is not null)
                 {
                     outputs.Add(output);
                 }
 
-                tool.Result = null;
+                // weird
+                await tool.ReportAsync("", cancellationToken);
             }
         }
         catch (InvalidDataException)
@@ -175,7 +176,7 @@ public sealed class ToolService
         return outputs;
     }
 
-    private async Task<IEnumerable<object>> ProcessSpecificGbxDataAsync(IoTool tool, BinData data, bool headerOnly)
+    private async Task<IEnumerable<object>> ProcessSpecificGbxDataAsync(IoTool tool, BinData data, bool headerOnly, CancellationToken cancellationToken)
     {
         await using var ms = new MemoryStream(data.Data);
 
@@ -184,7 +185,7 @@ public sealed class ToolService
         if (gbx is not null)
         {
             gbx.FilePath = data.FileName;
-            var output = await tool.ProcessAsync(gbx);
+            var output = await tool.ProcessAsync(gbx, cancellationToken);
             return output is null ? [] : [output];
         }
 
@@ -209,7 +210,7 @@ public sealed class ToolService
 
                 entryGbx.FilePath = entry.Name;
 
-                var output = await tool.ProcessAsync(entryGbx);
+                var output = await tool.ProcessAsync(entryGbx, cancellationToken);
 
                 if (output is not null)
                 {

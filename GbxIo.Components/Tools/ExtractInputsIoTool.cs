@@ -13,7 +13,7 @@ public class ExtractInputsIoTool(string endpoint, IServiceProvider provider)
 
     protected virtual string Format => "txt";
 
-    public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input)
+    public override Task<IEnumerable<TextData>> ProcessAsync(Gbx input, CancellationToken cancellationToken)
 	{
         var fileName = Path.GetFileName(input.FilePath);
 

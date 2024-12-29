@@ -9,16 +9,16 @@ public sealed class DecompressGbxIoTool(string endpoint, IServiceProvider provid
 {
     public override string Name => "Decompress Gbx";
 
-    public override async Task<GbxData> ProcessAsync(GbxData input)
+    public override async Task<GbxData> ProcessAsync(GbxData input, CancellationToken cancellationToken)
     {
         await using var inputStream = new MemoryStream(input.Data);
         await using var outputStream = new MemoryStream(input.Data.Length);
 
-        await Gbx.DecompressAsync(inputStream, outputStream);
+        await Gbx.DecompressAsync(inputStream, outputStream, cancellationToken);
 
         var sizeIncreased = outputStream.Length - inputStream.Length;
 
-        Result = $"Decompressed. File size increased by {ByteSize.FromBytes(sizeIncreased)} ({sizeIncreased / (double)inputStream.Length:P}).";
+        await ReportAsync($"Decompressed. File size increased by {ByteSize.FromBytes(sizeIncreased)} ({sizeIncreased / (double)inputStream.Length:P}).", cancellationToken);
 
         return new GbxData(input.FileName, outputStream.ToArray());
     }
