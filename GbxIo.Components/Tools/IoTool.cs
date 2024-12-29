@@ -38,7 +38,7 @@ public abstract class IoTool(string endpoint, IServiceProvider provider)
 
     public async Task ReportAsync(string message, CancellationToken cancellationToken = default)
     {
-        await Task.Delay(20, cancellationToken);
+        await Task.Delay(10, cancellationToken);
         Progress?.Report(message);
     }
 }

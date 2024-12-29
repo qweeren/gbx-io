@@ -36,11 +36,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
                 var fullPath = Path.Combine(file.FolderPath, fileName);
 
                 var percentage = (int)(processedFiles / (double)pak.Files.Count * 100);
-                if (percentage != prevPercentage)
-                {
-                    await ReportAsync($"{percentage}%", cancellationToken);
-                    prevPercentage = percentage;
-                }
+                await ReportAsync($"{processedFiles}/{pak.Files.Count} ({percentage}%)", cancellationToken);
 
                 try
                 {
@@ -72,6 +68,8 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
                 processedFiles++;
             }
         }
+
+        await ReportAsync($"{pak.Files.Count}/{pak.Files.Count} (100%)", CancellationToken.None);
 
         return new BinData($"{name}.zip", msOutput.ToArray());
     }
