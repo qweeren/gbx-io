@@ -7,12 +7,18 @@
         <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
         <TrimMode>partial</TrimMode>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+        <WasmBuildNative>true</WasmBuildNative>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
         <PackageReference Include="NativeSharpLzo" Version="0.3.3" />
-        <PackageReference Include="NativeSharpZlib" Version="0.2.5" />
+        <PackageReference Include="NativeSharpZlib" Version="0.2.6" />
     </ItemGroup>
 
     <ItemGroup>

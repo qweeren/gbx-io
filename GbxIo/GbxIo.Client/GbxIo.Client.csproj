@@ -11,7 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
         <PackageReference Include="NativeSharpLzo" Version="0.3.3" />
-        <PackageReference Include="NativeSharpZlib" Version="0.2.5" />
+        <PackageReference Include="NativeSharpZlib" Version="0.2.6" />
     </ItemGroup>
 
     <ItemGroup>
