@@ -12,18 +12,20 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BlazorMonaco" Version="3.2.0" />
+        <NativeFileReference Include="runtimes/browser-wasm/native/zlib.a" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BlazorMonaco" Version="3.3.0" />
         <PackageReference Include="ByteSize" Version="2.1.2" />
-        <PackageReference Include="GBX.NET" Version="2.0.9">
-            <IsTrimmable>false</IsTrimmable>
-        </PackageReference>
         <PackageReference Include="GBX.NET.Imaging.SkiaSharp" Version="1.1.0" />
         <PackageReference Include="GBX.NET.LZO" Version="2.1.1" />
         <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.1" />
-        <PackageReference Include="GBX.NET.ZLib" Version="1.1.0" />
+        <PackageReference Include="GBX.NET.PAK" Version="2.0.0-nightly.20241229.54be67b" />
+        <PackageReference Include="GBX.NET.ZLib" Version="1.1.1-nightly.20241229.54be67b" />
         <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
         <PackageReference Include="SharpCompress" Version="0.38.0" />
-        <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.9" />
+        <PackageReference Include="SkiaSharp.Views.Blazor" Version="3.116.1" />
     </ItemGroup>
 
     <ItemGroup>
