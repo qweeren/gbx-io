@@ -11,7 +11,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 {
     private readonly HttpClient http = provider.GetRequiredService<HttpClient>();
 
-    public override string Name => "Pak to Zip (TMUF)";
+    public override string Name => "Pak to ZIP (TMUF)";
 
     public override async Task<BinData> ProcessAsync(BinData input)
     {

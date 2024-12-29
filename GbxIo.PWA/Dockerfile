@@ -1,11 +1,13 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH=x64
 ARG APPNAME=GbxIo.PWA
 WORKDIR /src
 
-RUN apk add --no-cache nodejs
-# RUN dotnet workload install wasm-tools # bugged in alpine
+RUN apt-get update && apt-get install -y python3
+RUN dotnet workload install wasm-tools --skip-manifest-update
+
+RUN dotnet nuget add source https://nuget.gbx.tools/v3/index.json --name nuget.gbx.tools
 
 # copy csproj and restore as distinct layers
 COPY $APPNAME/*.csproj $APPNAME/
