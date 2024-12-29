@@ -57,6 +57,10 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
                     using var stream = entry.Open();
                     CopyFileToStream(pak, file, stream);
                 }
+                catch
+                {
+
+                }
             }
         }
 
