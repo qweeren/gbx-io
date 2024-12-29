@@ -28,15 +28,16 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
         await using var msOutput = new MemoryStream();
         using (var zip = new ZipArchive(msOutput, ZipArchiveMode.Create, true))
         {
+            var extractedFiles = 0;
             var processedFiles = 0;
-            var prevPercentage = 0;
+
             foreach (var file in pak.Files.Values)
             {
                 var fileName = hashes.GetValueOrDefault(file.Name)?.Replace('\\', Path.DirectorySeparatorChar) ?? file.Name;
                 var fullPath = Path.Combine(file.FolderPath, fileName);
 
                 var percentage = (int)(processedFiles / (double)pak.Files.Count * 100);
-                await ReportAsync($"{processedFiles}/{pak.Files.Count} ({percentage}%)", cancellationToken);
+                await ReportAsync($"Extracted files: {extractedFiles}/{processedFiles}/{pak.Files.Count} ({percentage}%)", cancellationToken);
 
                 try
                 {
@@ -53,12 +54,16 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
                     {
                         gbx.Save(stream);
                     }
+
+                    extractedFiles++;
                 }
                 catch (NotAGbxException)
                 {
                     var entry = zip.CreateEntry(fullPath);
                     using var stream = entry.Open();
                     CopyFileToStream(pak, file, stream);
+
+                    extractedFiles++;
                 }
                 catch
                 {

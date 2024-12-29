@@ -5,6 +5,7 @@
 
 @inject ToolService ToolService
 @inject IJSRuntime JS
+@inject NavigationManager NavManager
 
 @rendermode InteractiveWebAssembly
 
@@ -36,12 +37,24 @@
     private const string TextWhenUnavailable = "Select an I/O Tool";
     private const string SubTextWhenUnavailable = "on the left side, then import files";
 
+    private CancellationTokenSource cts = new();
+
     [Parameter]
     public string? Tool { get; set; }
 
     public List<TextData> TextOutput { get; set; } = new();
 
     public bool HighlightToolMenu { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += (s, e) =>
+        {
+            cts.Cancel();
+            cts.Dispose();
+            cts = new();
+        };
+    }
 
     async Task OnFileAsync(BinData data)
     {
@@ -50,8 +63,6 @@
             HighlightToolMenu = true;
             return;
         }
-
-        using var cts = new CancellationTokenSource();
 
         using var msZip = new MemoryStream();
         using (var zip = new ZipArchive(msZip, ZipArchiveMode.Create, leaveOpen: true))
