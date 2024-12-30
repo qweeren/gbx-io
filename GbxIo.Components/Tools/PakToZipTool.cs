@@ -119,12 +119,17 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
         string? line;
         while ((line = await reader.ReadLineAsync()) is not null)
         {
-            var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var firstSpace = line.IndexOf(' ');
 
-            if (parts.Length > 1)
+            if (firstSpace == -1)
             {
-                hashes[parts[0]] = parts.Length > 1 ? parts[1] : null;
+                continue;
             }
+
+            var hash = line[..firstSpace];
+            var path = line[(firstSpace + 1)..];
+
+            hashes[hash] = path;
         }
 
         return hashes;
