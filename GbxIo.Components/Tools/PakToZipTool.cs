@@ -41,11 +41,12 @@ public class PakToZipTool(string endpoint, IServiceProvider provider) : IoTool<B
                 var percentage = (int)(processedFiles / (double)pak.Files.Count * 100);
                 await ReportAsync($"Extracted files: {extractedFiles}/{processedFiles}/{pak.Files.Count} ({percentage}%)", cancellationToken);
 
+                var entry = zip.CreateEntry(fullPath);
+
                 try
                 {
                     var gbx = await pak.OpenGbxFileAsync(file, cancellationToken: cancellationToken);
 
-                    var entry = zip.CreateEntry(fullPath);
                     await using var stream = entry.Open();
 
                     if (gbx.Header is GbxHeaderUnknown)
@@ -61,7 +62,6 @@ public class PakToZipTool(string endpoint, IServiceProvider provider) : IoTool<B
                 }
                 catch (NotAGbxException)
                 {
-                    var entry = zip.CreateEntry(fullPath);
                     using var stream = entry.Open();
                     CopyFileToStream(pak, file, stream);
 
