@@ -24,6 +24,7 @@ public static class GbxIoExtensions
         services.AddTool<ChangeToOldWoodPhysicsIoTool>("change-to-old-wood-physics");
         services.AddTool<GbxToJsonIoTool>("gbx-to-json");
         services.AddTool<PakToZipTool>("pak-to-zip");
+        services.AddTool<PakToZipVsk5Tool>("pak-to-zip-vsk5");
 
         return services;
     }

@@ -7,11 +7,13 @@ using System.IO.Compression;
 
 namespace GbxIo.Components.Tools;
 
-public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : IoTool<BinData, BinData>(endpoint, provider)
+public class PakToZipTool(string endpoint, IServiceProvider provider) : IoTool<BinData, BinData>(endpoint, provider)
 {
     private readonly HttpClient http = provider.GetRequiredService<HttpClient>();
 
     public override string Name => "Pak to ZIP (TMUF)";
+
+    protected virtual string Game => "TM";
 
     public override async Task<BinData> ProcessAsync(BinData input, CancellationToken cancellationToken)
     {
@@ -19,7 +21,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 
         var name = Path.GetFileNameWithoutExtension(input.FileName) ?? throw new InvalidOperationException("Input file name is null.");
 
-        var key = await GetKeyAsync(name);
+        var key = await GetKeyAsync(name, Game);
 
         await using var pak = await Pak.ParseAsync(msInput, key, cancellationToken);
 
@@ -87,9 +89,9 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
         stream.Write(data, 0, count);
     }
 
-    private async Task<byte[]> GetKeyAsync(string name)
+    private async Task<byte[]> GetKeyAsync(string name, string game)
     {
-        using var response = await http.GetAsync("_content/GbxIo.Components/packlist.txt");
+        using var response = await http.GetAsync($"_content/GbxIo.Components/packlist_{game}.txt");
         response.EnsureSuccessStatusCode();
 
         var packlistStr = await response.Content.ReadAsStringAsync();
@@ -108,7 +110,7 @@ public sealed class PakToZipTool(string endpoint, IServiceProvider provider) : I
 
     private async Task<Dictionary<string, string?>> GetFileHashesAsync()
     {
-        using var response = await http.GetAsync("_content/GbxIo.Components/filehashes/TMUF.txt");
+        using var response = await http.GetAsync("_content/GbxIo.Components/FileHashes.txt");
         response.EnsureSuccessStatusCode();
 
         using var stream = await response.Content.ReadAsStreamAsync();
