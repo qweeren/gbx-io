@@ -197,24 +197,31 @@ public sealed class ToolService
         {
             using var zip = new ZipArchive(zipMs, ZipArchiveMode.Read);
 
-            foreach (var entry in zip.Entries)
+            foreach (var entry in zip.Entries.Where(x => !string.IsNullOrEmpty(x.Name)))
             {
                 await using var entryStream = entry.Open();
 
-                var entryGbx = await gbxService.ParseGbxAsync(entryStream, headerOnly);
-
-                if (entryGbx is null)
+                try
                 {
-                    continue;
+                    var entryGbx = await gbxService.ParseGbxAsync(entryStream, headerOnly);
+
+                    if (entryGbx is null)
+                    {
+                        continue;
+                    }
+
+                    entryGbx.FilePath = entry.FullName;
+
+                    var output = await tool.ProcessAsync(entryGbx, cancellationToken);
+
+                    if (output is not null)
+                    {
+                        outputs.Add(output);
+                    }
                 }
-
-                entryGbx.FilePath = entry.Name;
-
-                var output = await tool.ProcessAsync(entryGbx, cancellationToken);
-
-                if (output is not null)
+                catch (Exception ex)
                 {
-                    outputs.Add(output);
+                    logger.LogError(ex, "Failed to process GBX data.");
                 }
             }
         }
