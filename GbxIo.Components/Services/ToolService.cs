@@ -199,11 +199,17 @@ public sealed class ToolService
 
             foreach (var entry in zip.Entries.Where(x => !string.IsNullOrEmpty(x.Name)))
             {
+                await tool.ReportAsync(entry.FullName, cancellationToken);
+
                 await using var entryStream = entry.Open();
 
                 try
                 {
-                    var entryGbx = await gbxService.ParseGbxAsync(entryStream, headerOnly);
+                    await using var msEntry = new MemoryStream();
+                    await entryStream.CopyToAsync(msEntry, cancellationToken);
+                    msEntry.Position = 0;
+
+                    var entryGbx = await gbxService.ParseGbxAsync(msEntry, headerOnly);
 
                     if (entryGbx is null)
                     {
