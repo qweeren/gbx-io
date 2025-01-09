@@ -22,6 +22,7 @@ public static class GbxIoExtensions
 		services.AddTool<ExtractInputsIoTool>("extract-inputs");
         services.AddTool<ExtractInputsTmiIoTool>("extract-inputs-tmi");
         services.AddTool<ChangeToOldWoodPhysicsIoTool>("change-to-old-wood-physics");
+        services.AddTool<ValidateWithoutLightmapsIoTool>("validate-without-lightmaps");
         services.AddTool<GbxToJsonIoTool>("gbx-to-json");
         services.AddTool<PakToZipTool>("pak-to-zip");
         services.AddTool<PakToZipVsk5Tool>("pak-to-zip-vsk5");
