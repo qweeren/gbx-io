@@ -21,10 +21,10 @@
         <PackageReference Include="GBX.NET.Imaging.SkiaSharp" Version="1.1.1" />
         <PackageReference Include="GBX.NET.LZO" Version="2.1.2" />
         <PackageReference Include="GBX.NET.NewtonsoftJson" Version="1.0.2" />
-        <PackageReference Include="GBX.NET.PAK" Version="2.0.0" />
+        <PackageReference Include="GBX.NET.PAK" Version="2.1.0" />
         <PackageReference Include="GBX.NET.ZLib" Version="1.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
-        <PackageReference Include="SharpCompress" Version="0.38.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.1" />
+        <PackageReference Include="SharpCompress" Version="0.39.0" />
         <PackageReference Include="SkiaSharp.Views.Blazor" Version="3.116.1" />
     </ItemGroup>
 

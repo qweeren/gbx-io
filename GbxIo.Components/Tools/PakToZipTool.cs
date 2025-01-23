@@ -63,7 +63,7 @@ public class PakToZipTool(string endpoint, IServiceProvider provider) : IoTool<B
 
         var key = keys[Game].GetValueOrDefault(name) ?? throw new InvalidOperationException("No key found for the input file.");
 
-        await using var pak = await Pak.ParseAsync(msInput, Convert.FromHexString(key).Select(x => (byte)(255 - x)).ToArray(), cancellationToken);
+        await using var pak = await Pak.ParseAsync(msInput, Convert.FromHexString(key).Select(x => (byte)(255 - x)).ToArray(), cancellationToken: cancellationToken);
 
         var hashes = await GetFileHashesAsync();
 
